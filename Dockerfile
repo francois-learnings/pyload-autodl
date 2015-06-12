@@ -15,4 +15,4 @@ RUN cd /root/pyload-autodl && \
 pip install -r requirements.txt && \
 pip install .
 
-CMD ["/usr/bin/autodl"]
+CMD ["/usr/local/bin/autodl"]
