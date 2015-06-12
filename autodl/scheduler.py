@@ -4,7 +4,7 @@ import autodl.pyload_client, autodl.plugins.mangaFrCom, autodl.plugins.scnsrcMe
 # Logginf configuration and setting
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-hdlr = logging.FileHandler('/var/log/autodl.log')
+hdlr = logging.FileHandler('autodl/logs/autodl.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr) 

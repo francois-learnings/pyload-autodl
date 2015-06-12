@@ -1,0 +1,68 @@
+2015-06-12 14:22:16,737 ERROR theater is not a valid plugin
+2015-06-12 14:22:16,739 ERROR test is not a valid plugin
+2015-06-12 14:23:04,549 ERROR theater is not a valid plugin
+2015-06-12 14:23:04,550 ERROR test is not a valid plugin
+2015-06-12 14:23:32,586 ERROR theater is not a valid plugin
+2015-06-12 14:23:32,588 ERROR test is not a valid plugin
+2015-06-12 14:24:01,085 ERROR theater is not a valid plugin
+2015-06-12 14:24:01,086 ERROR test is not a valid plugin
+2015-06-12 14:24:01,129 INFO Found title shoukugeki episode 9 in /tmp/shoukugeki-detail.html
+2015-06-12 14:24:01,131 DEBUG Found links ['/tmp/multiup-home.html']
+2015-06-12 14:24:01,132 DEBUG Built mirrors list: ['/tmp/multiup-home.html']
+2015-06-12 14:24:01,136 INFO Successfully built links list: ['/success/uplea']
+2015-06-12 14:24:01,138 INFO Found title shoukugeki episode 9 in /tmp/shoukugeki-detail.html
+2015-06-12 14:24:01,139 DEBUG Found links ['/tmp/multiup-home.html']
+2015-06-12 14:24:01,139 DEBUG Built mirrors list: ['/tmp/multiup-home.html']
+2015-06-12 14:24:01,141 INFO Successfully built links list: ['/success/uplea']
+2015-06-12 14:24:13,689 ERROR theater is not a valid plugin
+2015-06-12 14:24:13,691 ERROR test is not a valid plugin
+2015-06-12 14:24:13,731 INFO Found title shoukugeki episode 9 in /tmp/shoukugeki-detail.html
+2015-06-12 14:24:13,733 DEBUG Found links ['/tmp/multiup-home.html']
+2015-06-12 14:24:13,733 DEBUG Built mirrors list: ['/tmp/multiup-home.html']
+2015-06-12 14:24:13,735 DEBUG Found detail page relative path: ['/detail.html']
+2015-06-12 14:24:13,735 DEBUG Built detail page url: /tmp/detail.html
+2015-06-12 14:24:13,736 DEBUG Found raw links list: ['/success/uplea']
+2015-06-12 14:24:13,737 DEBUG Built returned links list: ['/success/uplea']
+2015-06-12 14:24:13,737 INFO Successfully built links list: ['/success/uplea']
+2015-06-12 14:24:13,739 INFO Found title shoukugeki episode 9 in /tmp/shoukugeki-detail.html
+2015-06-12 14:24:13,740 DEBUG Found links ['/tmp/multiup-home.html']
+2015-06-12 14:24:13,740 DEBUG Built mirrors list: ['/tmp/multiup-home.html']
+2015-06-12 14:24:13,741 DEBUG Found detail page relative path: ['/detail.html']
+2015-06-12 14:24:13,741 DEBUG Built detail page url: /tmp/detail.html
+2015-06-12 14:24:13,742 DEBUG Found raw links list: ['/success/uplea']
+2015-06-12 14:24:13,742 DEBUG Built returned links list: ['/success/uplea']
+2015-06-12 14:24:13,743 INFO Successfully built links list: ['/success/uplea']
+2015-06-12 14:24:13,745 DEBUG Found detail page relative path: ['/detail.html']
+2015-06-12 14:24:13,745 DEBUG Built detail page url: /tmp/detail.html
+2015-06-12 14:24:13,746 DEBUG Found raw links list: ['/success/uplea']
+2015-06-12 14:24:13,747 DEBUG Built returned links list: ['/success/uplea']
+2015-06-12 14:24:13,749 DEBUG Found detail page relative path: ['/detail.html']
+2015-06-12 14:24:13,749 DEBUG Built detail page url: /tmp/detail.html
+2015-06-12 14:24:13,750 DEBUG Found raw links list: ['/success/uplea']
+2015-06-12 14:24:13,751 DEBUG Built returned links list: ['/success/uplea']
+2015-06-12 14:24:42,377 ERROR theater is not a valid plugin
+2015-06-12 14:24:42,379 ERROR test is not a valid plugin
+2015-06-12 14:24:42,419 INFO Found title shoukugeki episode 9 in /tmp/shoukugeki-detail.html
+2015-06-12 14:24:42,420 DEBUG Found links ['/tmp/multiup-home.html']
+2015-06-12 14:24:42,421 DEBUG Built mirrors list: ['/tmp/multiup-home.html']
+2015-06-12 14:24:42,423 DEBUG Found detail page relative path: ['/detail.html']
+2015-06-12 14:24:42,423 DEBUG Built detail page url: /tmp/detail.html
+2015-06-12 14:24:42,423 DEBUG Found raw links list: ['/success/uplea']
+2015-06-12 14:24:42,424 DEBUG Built returned links list: ['/success/uplea']
+2015-06-12 14:24:42,424 INFO Successfully built links list: ['/success/uplea']
+2015-06-12 14:24:42,426 INFO Found title shoukugeki episode 9 in /tmp/shoukugeki-detail.html
+2015-06-12 14:24:42,427 DEBUG Found links ['/tmp/multiup-home.html']
+2015-06-12 14:24:42,427 DEBUG Built mirrors list: ['/tmp/multiup-home.html']
+2015-06-12 14:24:42,428 DEBUG Found detail page relative path: ['/detail.html']
+2015-06-12 14:24:42,428 DEBUG Built detail page url: /tmp/detail.html
+2015-06-12 14:24:42,429 DEBUG Found raw links list: ['/success/uplea']
+2015-06-12 14:24:42,429 DEBUG Built returned links list: ['/success/uplea']
+2015-06-12 14:24:42,430 INFO Successfully built links list: ['/success/uplea']
+2015-06-12 14:24:42,432 DEBUG Found detail page relative path: ['/detail.html']
+2015-06-12 14:24:42,432 DEBUG Built detail page url: /tmp/detail.html
+2015-06-12 14:24:42,433 DEBUG Found raw links list: ['/success/uplea']
+2015-06-12 14:24:42,434 DEBUG Built returned links list: ['/success/uplea']
+2015-06-12 14:24:42,436 DEBUG Found detail page relative path: ['/detail.html']
+2015-06-12 14:24:42,436 DEBUG Built detail page url: /tmp/detail.html
+2015-06-12 14:24:42,437 DEBUG Found raw links list: ['/success/uplea']
+2015-06-12 14:24:42,437 DEBUG Built returned links list: ['/success/uplea']
