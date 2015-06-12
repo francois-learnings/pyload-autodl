@@ -1,0 +1,103 @@
+from lxml import html
+import urllib, logging, requests, time
+from selenium import webdriver
+import autodl.utils
+
+
+# Logging configuration and setting
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+
+def get_links(site_url, **kwargs):
+    '''
+    Return a list of links from hosts in "desired_hosts" list
+    '''
+    #Get homepage
+    logger.debug("Trying to load webpage: %s" % (site_url))
+    s = requests.Session()
+    try:
+        raw_page = s.get(site_url)
+    except IOError as e:
+        logger.error("Could not find page %s"
+                     % (site_url))
+        raise e
+
+    data = raw_page.content
+    token = raw_page.cookies['csrftoken']
+    cookies = dict(csrftoken=token)
+    #print cookies
+
+    # parse homepage for detail url
+    tree = html.fromstring(data)
+    #print data
+
+    detail = tree.xpath('//div[@class="wrap"]/a[@class="dl-button"]/@href')
+    logger.debug("Found detail page relative path: %s" % (detail))
+    #print detail
+
+    if len(kwargs) is 0:
+        base_url = "http://jheberg.net"
+    else:
+        base_url = kwargs["baseurl"]
+    detail_url = base_url + detail[0]
+    logger.debug("Built detail page url: %s" % (detail_url))
+    #print detail_url
+
+
+    # Get detailpage
+    headers = {'user-agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0', 'referer': site_url}
+    #print headers
+
+    logger.debug("Trying to load page: %s" % (detail_url))
+    try:
+         detail_page = s.get(detail_url, cookies=cookies, headers=headers)
+    except IOError as e:
+        logger.error("Could not fin page %s"
+                     % (detail_url))
+        raise e
+
+    data = detail_page.content
+    #print data
+
+
+    # parse detailpage for redirection link
+    tree = html.fromstring(data)
+    redirect_rel_path = tree.xpath('//a[@class="hoster-thumbnail"]/@href')
+
+    activated_hosters = autodl.utils.get_activated_hosters()
+
+    returned_links = []
+    for link in redirect_rel_path:
+        #print link
+        for hoster in activated_hosters:
+            #print hoster
+    	    rel_link = None
+            if hoster in link:
+                #print link
+                rel_link = link
+
+                if rel_link is not None:
+                    redirection_url = "http://jheberg.net" + rel_link
+                    #print redirection_url
+
+                    
+                    logger.debug("Trying to load page: %s" % (redirection_url))
+                    #driver = webdriver.Firefox()
+                    driver = webdriver.PhantomJS()
+                    driver.get(redirection_url)
+
+                    #this waits for the new page to load
+                    while(redirection_url == driver.current_url):
+                          time.sleep(1)
+                    redirected_url = driver.current_url
+                    driver.quit()
+                    #print redirected_url
+                    returned_links.append(redirected_url)
+
+    if returned_links != []:
+        print returned_links
+        return returned_links
+    else:
+        print "didn\'t find hoster"

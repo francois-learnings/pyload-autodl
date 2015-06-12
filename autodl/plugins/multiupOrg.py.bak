@@ -1,0 +1,71 @@
+from lxml import html
+import urllib
+import logging
+
+
+# Logging configuration and setting
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+
+def get_links(site_url, **kwargs):
+    '''
+    Return a list of links from hosts in "desired_hosts" list
+    '''
+    # get_webpage
+    logger.debug("Trying to load webpage: %s" % (site_url))
+    try:
+        raw_page = urllib.urlopen(site_url)
+        data = raw_page.read()
+        raw_page.close()
+    except IOError as e:
+        logger.error("Could not find page %s"
+                     % (site_url))
+        raise e
+
+    # parse webpage for detail_url
+    tree = html.fromstring(data)
+    #print data
+
+    detail = tree.xpath('//a[@class="btn"]/@href')
+    logger.debug("Found detail page relative path: %s" % (detail))
+    # print detail
+
+    if len(kwargs) is 0:
+        base_url = "http://www.multiup.org"
+    else:
+        base_url = kwargs["baseurl"]
+    detail_url = base_url + detail[0]
+    logger.debug("Built detail page url: %s" % (detail_url))
+    # print detail_url
+
+    # get detail webpage
+    logger.debug("Trying to load page: %s" % (detail_url))
+    try:
+        detail_page = urllib.urlopen(detail_url)
+        data = detail_page.read()
+        detail_page.close()
+    except IOError as e:
+        logger.error("Could not find page %s"
+                     % (detail_url))
+        raise e
+
+    # parse detail webpage for links
+    tree = html.fromstring(data)
+    #print data
+
+    links = tree.xpath('//a[@class="btn btn-small disabled link host"]/@href')
+    logger.debug("Found raw links list: %s" % (links))
+    #print links
+    # desired_hosts = ['uplea', 'uptobox']
+    desired_hosts = ['uplea', '1fichier']
+    returned_links = []
+    for host in desired_hosts:
+        for link in links:
+            if host in link:
+                returned_links.append(link)
+    logger.debug("Built returned links list: %s" % (returned_links))
+    return returned_links
+
+#get_links("http://www.multiup.org/fr/download/d7efe77903f7fc8f2f2a14e4979e2aa9/Baby_Steps_S2_08_Vostfr__720p_.mp4")

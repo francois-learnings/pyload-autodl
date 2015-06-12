@@ -1,0 +1,176 @@
+from lxml import html
+import urllib
+import logging
+import autodl.plugins.multiupOrg,autodl.plugins. jhebergNet
+import autodl.utils
+
+# FIXME
+# Logginf configuration and setting
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+hdlr = logging.FileHandler('/var/log/autodl.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.DEBUG)
+
+class mangaFrCom(object):
+    """
+    Class to interact with the with the site manga-fr.com
+    """
+    def __init__(self, url="http://manga-fr.com/"):
+        self.url = url
+        #print url
+
+        homepage = autodl.utils.get_webpage(url)
+        print homepage
+
+
+    def parse_homepage_for_episode(self, title, episode):
+        pass
+    
+    def get_detailpage(self, url):
+        pass
+    
+    def parse_detailpage_for_mirror(self, url):
+        pass
+
+test = mangaFrCom()
+#test = mangaFrCom(url="/tmp/test")
+
+
+def get_result_list(list, **kwargs):
+    """
+    Take a list of list as a parameter (list of targets).
+    Return a list of list with the links for a title
+    :param list
+    :type list of list
+    """
+    # Added For test purpose - FIXME
+    if len(kwargs) == 0:
+        site_url = "http://manga-fr.com/"
+    else:
+        if "url" in kwargs:
+            site_url = kwargs["url"]
+    logger.debug("Trying to load webpage: %s" % (site_url))
+    try:
+        raw_page = urllib.urlopen(site_url)
+        data = raw_page.read()
+        raw_page.close()
+    except IOError as e:
+        logger.error("Could not find page %s"
+                     % (site_url))
+        raise e
+
+    #print data
+
+    result = {}
+    for target in list:
+        if target[1] == "mangaFrCom":
+            links = get_links(data, target[2], target[3])
+            result[target[2]] = links
+    return result
+
+def get_links(raw_html, title, episode, **kwargs):
+    '''
+    fisrt, this function grab mirrors from the site (ie multiup, jheberg...)
+    then it call the appropriate plugin to extract links from those mirrors
+    and return these links
+    It can take an additionnal named argument: url="some_file", which is used
+    for testing (see tests/test_plugin_mangaFrCom for more informations
+    '''
+    # FIXME: Added for test purpose
+    if len(kwargs) == 0:
+        site_url = "http://manga-fr.com/"
+    else:
+        if "url" in kwargs:
+            site_url = kwargs["url"]
+
+    #TODO: Use a try bloc
+    tree = html.fromstring(raw_html)
+    elements = tree.xpath('//section[@class="content"]/h2/a/@href | //div[@class="num-NR"]/text()')
+    #print elements
+
+    # Look for "title" and "episode" in the homepage
+    # and return the url of the detail page for this episode
+    index = 0
+    detail_url = None
+    for i in elements:
+        if index < len(elements):
+            index += 1
+        #print i
+        #print elements[index]
+        #print title
+        if ((title in i) and (episode is None)) or \
+           ((title in i) and (episode in elements[index])):
+            logger.info("Found title %s episode %s in %s" %
+                         (title, episode, i))
+            # print "found title %s episode %s in %s" % (title,
+            #                                            elements[index], i)
+            detail_url = i
+            break
+    else:
+        logger.info("Did not find title %s episode %s in %s" %
+                     (title, episode, site_url))
+    #print detail_url
+
+    if detail_url is None:
+        return None
+    else:
+        # Get the detail page for the episode
+        logger.debug("Trying to load webpage: %s" % (detail_url))
+        try:
+            raw_page = urllib.urlopen(detail_url)
+            data = raw_page.read()
+            raw_page.close()
+        except IOError as e:
+            logger.error("Could not find page %s"
+                         % (detail_url))
+            raise e
+
+        tree = html.fromstring(data)
+        #print data
+
+        # Find relevant urls
+        links = tree.xpath('//td[@class="table-links"]/a/@href')
+        logger.debug("Found links %s" % (links))
+        #print links
+
+        # look for supported mirrors in the links on the detail page
+        # and add them to list of mirros to analyze
+        supported_mirrors = ["multiup", "jheberg"]
+        provided_mirrors = []
+        for mirror in supported_mirrors:
+            for link in links:
+                if mirror in link:
+                    #print link
+                    provided_mirrors.append(link)
+
+        logger.debug("Built mirrors list: %s" % (provided_mirrors))
+        # print provided_mirrors
+
+
+    for mirror in provided_mirrors:
+        if "multiup" in mirror:
+            # condition added for test purpose
+            if len(kwargs) is not 0:
+                links_list = multiupOrg.get_links(mirror, baseurl="/tmp")
+                print links_list
+            else:
+                links_list = multiupOrg.get_links(mirror)
+            logger.info("Successfully built links list: %s" % (links_list))
+            break
+        elif "jheberg" in mirror:
+            # condition added for test purpose
+            if len(kwargs) is not 0:
+                links_list = jhebergNet.get_links(mirror, baseurl="/tmp")
+            else:
+                links_list = jhebergNet.get_links(mirror)
+            logger.info("Successfully built links list: %s" % (links_list))
+            break
+        else:
+            print "error"
+    return links_list
+
+#print get_mirrors("baby", "8")
+#print get_links("triage", "9")
