@@ -1,9 +1,10 @@
 language : python
 python:
   - "2.7"
-install:
+before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y python-lxml
+install:
   - pip install -r requirements.txt
   - pip install -r requirements-tests.txt
   - pip install .
