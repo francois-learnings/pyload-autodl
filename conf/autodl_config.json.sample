@@ -1,0 +1,27 @@
+{
+    "hosters": [
+        "Uplea", 
+        "1fichier", 
+        "Filefactory"
+    ], 
+    "target_titles": {
+        "series": {
+            "title1": "10", 
+            "title2": "3"
+        }, 
+        "animes": {
+            "shokugeki": "11", 
+            "title1": "11"
+        }
+    }, 
+    "supported_sites": {
+        "series": [
+            "scnsrcMe", 
+            "telechargementz"
+        ], 
+        "animes": [
+            "mangaFrCom", 
+            "animeserv"
+        ]
+    }
+}
