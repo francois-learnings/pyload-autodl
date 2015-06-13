@@ -15,4 +15,23 @@ RUN cd /root/pyload-autodl && \
 pip install -r requirements.txt && \
 pip install .
 
+# Install PhantomJS
+RUN apt-get update && \
+apt-get install -y \
+build-essential \
+chrpath \
+libssl-dev \
+libxft-dev \
+libfreetype6 \
+libfreetype6-dev \
+libfontconfig1 \
+libfontconfig1-dev
+
+ADD misc/phantomjs-1.9.8-linux-x86_64.tar.bz2 /usr/src/phantomjs-1.9.8-linux-x86_64.tar.bz2
+
+RUN cd /usr/src && \
+tar -xzf phantomjs-1.9.8-linux-x86_64.tar.bz2 && \
+mv phantomjs-1.9.8-linux-x86_64 /usr/local/share && \
+ln -sf /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/bin
+
 CMD ["/usr/local/bin/autodl"]
