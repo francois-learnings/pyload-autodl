@@ -1,4 +1,5 @@
 import urllib, logging, json
+import settings
 
 # FIXME
 # Logginf configuration and setting
@@ -29,6 +30,7 @@ def get_activated_hosters(**kwargs):
     get activated hosters from configuration file (optionally pass as a parameter)
     return them as a list
     """
+    print settings.CONFIG_FILE
     logger.debug("Trying to load configuration file")
     try:
         if ("config_file" in kwargs) and \

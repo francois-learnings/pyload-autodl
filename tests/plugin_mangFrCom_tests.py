@@ -2,6 +2,7 @@ from nose.tools import *
 from autodl.plugins import *
 import os
 import autodl.utils
+from mock import patch
 
 def create_fake_homepage(tmp_file):
     with open(tmp_file, "w") as file_tmp:
@@ -57,7 +58,8 @@ def test_parse_detailpage_for_mirrors():
 
     delete_fake_file(tmp_file)
 
-def test_parse_mirrors_for_links_multpiup():
+@patch('autodl.utils.get_activated_hosters')
+def test_parse_mirrors_for_links_multpiup(get_activated_hosters):
     tmp_file = "/tmp/multiup-home.html"
     tmp_file_detail = "/tmp/detail.html"
     create_fake_multiup_homepage(tmp_file)
@@ -67,6 +69,8 @@ def test_parse_mirrors_for_links_multpiup():
     #print raw_html
 
     plugin = autodl.plugins.mangaFrCom.MangaFrCom(["animes", "mangaFrCom", "shoukugeki", "9"])
+
+    autodl.utils.get_activated_hosters.return_value = ['Uplea', '1fichier']
     result = plugin.parse_mirrors_for_links([tmp_file], baseurl="/tmp")
     #print result
 
@@ -79,7 +83,8 @@ def test_parse_mirrors_for_links_multpiup():
 def test_parse_mirrors_for_links_jheberg():
     pass
 
-def test_get_result_list():
+@patch('autodl.utils.get_activated_hosters')
+def test_get_result_list(get_activated_hosters):
     tmp_file = "/tmp/home.html"
     tmp_file2 = "/tmp/shoukugeki-detail.html"
     tmp_file_multiup_home = "/tmp/multiup-home.html"
@@ -90,6 +95,7 @@ def test_get_result_list():
     create_fake_multiup_detailpage(tmp_file_multiup_detail)
 
     plugin = autodl.plugins.mangaFrCom.MangaFrCom([["animes", "mangaFrCom", "shoukugeki", "9"]], "/tmp/home.html")
+    autodl.utils.get_activated_hosters.return_value = ['Uplea', '1fichier']
     links = plugin.get_result_list(test="test")
     #print links
     assert_equal(links["shoukugeki"], ["/success/uplea"])

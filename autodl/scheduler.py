@@ -16,25 +16,35 @@ class Scheduler(object):
 
     """
 
-    def __init__(self, **kwargs):
-        """ Constructor """
-        self.config_file_path = ""
+    def __init__(self, DICT_OPTS, **kwargs):
+        """ 
+        Constructor 
+        """
+        self.DICT_OPTS = DICT_OPTS
+
+        self.CONFIG_FILE = self.DICT_OPTS["CONFIG_FILE"]
+        self.SERVER_IP = self.DICT_OPTS["SERVER_IP"]
+        self.SERVER_PORT = self.DICT_OPTS["SERVER_PORT"]
+        self.USER = self.DICT_OPTS["USER"]
+        self.PASSWORD = self.DICT_OPTS["PASSWORD"]
+
+        #self.config_file_path = ""
+        #if ("config_file" in kwargs) and \
+        #   os.path.isfile(kwargs["config_file"]):
+        #    self.config_file_path = kwargs["config_file"]
+        #else:
+        #    self.config_file_path = "/etc/autodl/autodl_config.json"
+
         logger.debug("Trying to load configuration file")
         try:
-            if ("config_file" in kwargs) and \
-               os.path.isfile(kwargs["config_file"]):
-                self.config_file_path = kwargs["config_file"]
-            else:
-                self.config_file_path = "/etc/autodl/autodl_config.json"
-
-            with open(self.config_file_path, 'r+') as fichier:
+            with open(self.CONFIG_FILE, 'r+') as fichier:
                 self.decoded = json.load(fichier)
             logger.debug("Successfully load config file from %s with \
-                    content %s" % (self.config_file_path, self.decoded))
+                    content %s" % (self.CONFIG_FILE, self.decoded))
 
         except IOError as e:
             logger.error("No configuration file found in %s"
-                         % (self.config_file_path))
+                         % (self.CONFIG_FILE))
             raise e
 
         supported_types = ["animes", "series"]
@@ -43,11 +53,12 @@ class Scheduler(object):
             thread.daemon = True                            # Daemonize thread
             thread.start()                                  # Start the execution
 
+
     def increment_episode(self, media_type, title):
         self.media_type = media_type
         self.title = title
 
-        with open('/etc/autodl/autodl_config.json', 'r') as f:
+        with open(self.CONFIG_FILE, 'r') as f:
             data = json.load(f)
             current_episode = int(data["target_titles"][self.media_type][self.title])
             #print current_episode
@@ -56,11 +67,9 @@ class Scheduler(object):
 
             data["target_titles"][self.media_type][self.title] = new_episode
         
-        with open('/etc/autodl/autodl_config.json', 'w') as f:
+        with open(self.CONFIG_FILE, 'w') as f:
             f.write(json.dumps(data, indent=4))
 
-        pass
-        
 
     def check_type(self, media_type):
         while True:
@@ -91,7 +100,7 @@ class Scheduler(object):
                     if (links[element] is not None) and (links[element] != []):
                         #print links[element]
                         #push_to_pyload(links[element])
-                        client = autodl.pyload_client.pyloadClient("172.17.0.57", "user", "neutre")
+                        client = autodl.pyload_client.pyloadClient(self.SERVER_IP, self.SERVER_PORT, self.USER, self.PASSWORD)
                         #link = client.choose_link(links[element])
                         title = element
                         # Try every links until one is valid
@@ -104,15 +113,6 @@ class Scheduler(object):
                                 if response == "success":
                                     self.increment_episode(media_type, title)
                                     break
-
-#            for target in target_list:
-#                site_list = []
-#                #print target
-#                if target[1] == "mangaFrCom":
-#                    site_list = tgt.create(target_type=media_type, target_site="manga-fr"))
-#                    #links = mangaFrCom.get_links(target[2], target[3])
-#                    #print links
-#                print site_list
 
             time.sleep(next_call - time.time())
 

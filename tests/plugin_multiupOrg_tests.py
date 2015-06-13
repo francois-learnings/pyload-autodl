@@ -1,6 +1,7 @@
 from nose.tools import *
 import autodl.plugins.multiupOrg
 import os
+from mock import patch
 
 def create_fake_homepage(tmp_file):
     with open(tmp_file, "w") as file_tmp:
@@ -33,13 +34,16 @@ def test_parse_homepage_for_detail_url():
     delete_fake_file(tmp_file)
 
 
-def test_parse_detail_page_for_links():
+@patch('autodl.utils.get_activated_hosters')
+def test_parse_detail_page_for_links(get_activated_hosters):
     tmp_file = "/tmp/detail.html"
     create_fake_detailpage(tmp_file)
 
     raw_html = autodl.utils.get_webpage(tmp_file)
 
     plugin = autodl.plugins.multiupOrg.MultiupOrg(tmp_file)
+
+    autodl.utils.get_activated_hosters.return_value = ['Uplea', '1fichier']
     result = plugin.parse_detail_page_for_links(raw_html)
 
     assert_equal(result, ["/success/uplea"])
@@ -47,12 +51,14 @@ def test_parse_detail_page_for_links():
     delete_fake_file(tmp_file)
 
 
-def test_get_links():
+@patch('autodl.utils.get_activated_hosters')
+def test_get_links(get_activated_hosters):
     tmp_file = "/tmp/home.html"
     tmp_file2 = "/tmp/detail.html"
     create_fake_homepage(tmp_file)
     create_fake_detailpage(tmp_file2)
 
+    autodl.utils.get_activated_hosters.return_value = ['Uplea', '1fichier']
     plugin = autodl.plugins.multiupOrg.MultiupOrg(tmp_file)
     result = plugin.get_links(url=tmp_file)
 

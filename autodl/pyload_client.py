@@ -6,12 +6,13 @@ class pyloadClient(object):
     """
 
     """
-    def __init__(self, server_ip, username, password):
+    def __init__(self, server_ip, server_port, username, password):
         self.server_ip = server_ip
+        self.server_port = server_port
         self.username = username
         self.password = password
 
-        url  = "http://" + self.server_ip + ":8000/api/login"
+        url  = "http://" + self.server_ip + ":" + self.server_port + "/api/login"
         #print url
 
         payload={'username':self.username,'password':self.password}
