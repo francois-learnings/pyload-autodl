@@ -27,10 +27,10 @@ libfreetype6-dev \
 libfontconfig1 \
 libfontconfig1-dev
 
-ADD misc/phantomjs-1.9.8-linux-x86_64.tar.bz2 /usr/src/phantomjs-1.9.8-linux-x86_64.tar.bz2
+COPY misc/phantomjs-1.9.8-linux-x86_64.tar.bz2 /usr/src/phantomjs-1.9.8-linux-x86_64.tar.bz2
 
 RUN cd /usr/src && \
-tar -xzf phantomjs-1.9.8-linux-x86_64.tar.bz2 && \
+tar xvjf phantomjs-1.9.8-linux-x86_64.tar.bz2 && \
 mv phantomjs-1.9.8-linux-x86_64 /usr/local/share && \
 ln -sf /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/bin
 
