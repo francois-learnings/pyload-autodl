@@ -1,1 +1,1 @@
-__all__ = ["mangaFrCom", "multiupOrg", "scnsrcMe", "jhebergNet"]
+__all__ = ["mangaFrCom", "multiupOrg", "scnsrcMe", "jhebergNet", "horriblesubsInfo"]

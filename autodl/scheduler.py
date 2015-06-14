@@ -1,5 +1,8 @@
 import time, datetime, threading, logging, json, os, crawler
-import autodl.pyload_client, autodl.plugins.mangaFrCom, autodl.plugins.scnsrcMe
+import autodl.pyload_client
+import autodl.plugins.mangaFrCom 
+import autodl.plugins.scnsrcMe
+import autodl.plugins.horriblesubsInfo
 
 # Logginf configuration and setting
 logging.basicConfig()
@@ -43,7 +46,7 @@ class Scheduler(object):
                          % (self.CONFIG_FILE))
             raise e
 
-        supported_types = ["animes", "series"]
+        supported_types = ["animes", "series", "vosta"]
         for media_type in supported_types:
             thread = threading.Thread(target=self.check_type, args=(media_type,))
             thread.daemon = True                            # Daemonize thread
@@ -85,8 +88,9 @@ class Scheduler(object):
                     plugin = autodl.plugins.mangaFrCom.MangaFrCom(target_list)
                     links = plugin.get_result_list()
                     #print links
-                elif site == "animeservCom":
-                    pass
+                elif site == "horriblesubsInfo":
+                    plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo(target_list)
+                    links = plugin.get_result_list()
                 elif site == "scnsrcMe":
                     links = autodl.plugins.scnsrcMe.get_result_list(target_list)
                     #print links
