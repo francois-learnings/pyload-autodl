@@ -36,8 +36,7 @@ def get_activated_hosters(**kwargs):
     logger.debug("Trying to load configuration file")
     try:
         # TODO: make the work to remove this if
-        if ("config_file" in kwargs) and \
-                os.path.isfile(kwargs["config_file"]):
+        if ("config_file" in kwargs) and os.path.isfile(kwargs["config_file"]):
             config_file_path = kwargs["config_file"]
         else:
             config_file_path = settings.CONFIG_FILE
