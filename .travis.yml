@@ -12,3 +12,4 @@ install:
 script:
   - nosetests -s --with-coverage --cover-erase --cover-package=autodl
   - flake8 autodl/utils.py  
+  - flake8 tests/utils_tests.py
