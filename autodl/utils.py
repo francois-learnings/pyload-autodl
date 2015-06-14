@@ -1,4 +1,6 @@
-import urllib, logging, json
+import urllib
+import logging
+import json
 import settings
 import os
 
@@ -8,31 +10,34 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 def get_webpage(url):
     logger.debug("Trying to load webpage: %s" % (url))
     try:
         raw_page = urllib.urlopen(url)
         data = raw_page.read()
         raw_page.close()
-    
+
         return data
-    
+
     except IOError as e:
         logger.error("Could not find page %s"
-                        % (url))
+                     % (url))
         raise e
+
 
 def get_activated_hosters(**kwargs):
     """
-    get activated hosters from configuration file (optionally pass as a parameter)
+    get activated hosters from configuration file (optionally pass as a
+    parameter)
     return them as a list
     """
-    #print settings.CONFIG_FILE + " - test variable globale"
+    # print settings.CONFIG_FILE + " - test variable globale"
     logger.debug("Trying to load configuration file")
     try:
-        #TODO: make the work to remove this if
+        # TODO: make the work to remove this if
         if ("config_file" in kwargs) and \
-             os.path.isfile(kwargs["config_file"]):
+                os.path.isfile(kwargs["config_file"]):
             config_file_path = kwargs["config_file"]
         else:
             config_file_path = settings.CONFIG_FILE
@@ -48,5 +53,5 @@ def get_activated_hosters(**kwargs):
         raise e
 
     hosters = decoded["hosters"]
-    #print hosters
+    # print hosters
     return hosters

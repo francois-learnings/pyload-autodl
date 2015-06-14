@@ -11,3 +11,4 @@ install:
   - pip install .
 script:
   - nosetests -s --with-coverage --cover-erase --cover-package=autodl
+  - flake8 autodl/utils.py  
