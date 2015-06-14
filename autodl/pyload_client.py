@@ -81,7 +81,7 @@ class pyloadClient(object):
                 return "error"
                 flag = False
                 break
-            elif status == "downloading" or status == "waiting" or status == "queued":
+            elif status == "downloading" or status == "waiting" or status == "queued" or status == "online":
                 print "SUCCESS Download is queued"
                 return "success"
                 flag = False
