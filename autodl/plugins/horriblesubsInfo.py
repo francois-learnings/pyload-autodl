@@ -59,6 +59,7 @@ class HorriblesubsInfo(object):
                 else:      
                     logger.info("Did not find title %s episode %s in %s" % (target[2], target[3], self.url))
 
+        driver.quit()
         #print result
         return result
 
