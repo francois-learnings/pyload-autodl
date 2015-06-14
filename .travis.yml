@@ -9,11 +9,5 @@ install:
   - pip install -r requirements.txt
   - pip install -r requirements-tests.txt
   - pip install .
-before_script:
-  - sudo mkdir /etc/autodl
-  - sudo cp conf/autodl_config.json.sample /etc/autodl/autodl_config.json
-  - sudo chmod 755 /etc/autodl
-  - sudo chmod 755 /etc/autodl/autodl_config.json
-
 script:
   - nosetests -s
