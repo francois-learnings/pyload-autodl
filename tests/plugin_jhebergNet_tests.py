@@ -1,4 +1,5 @@
 from nose.tools import *
+import unittest
 import os
 import autodl.utils
 import autodl.plugins.jhebergNet
@@ -55,6 +56,7 @@ def test_parse_detailpage_for_redirection_link(get_activated_hosters):
     assert_equal(result, ['http://jheberg.net/redirect/uplea'])
 
 #TODO: find a way to test this method...
+#@unittest.skip("Need to be able to test method get_hoster_link_from_redirection_url")
 #@with_httmock(mocks.jhebergNet.redirectpage, mocks.jhebergNet.google_mock)
 #def test_get_hoster_link_from_redirection_url():
 #    s=requests.Session()
@@ -62,7 +64,8 @@ def test_parse_detailpage_for_redirection_link(get_activated_hosters):
 #    result = plugin.get_hoster_link_from_redirection_url(["http://jheberg.net/redirect/uplea"])
 #    print result
 
-
+#TODO
+@unittest.skip("Need to be able to test method get_hoster_link_from_redirection_url")
 @patch('autodl.utils.get_activated_hosters')
 def test_get_links(get_activated_hosters):
     with HTTMock(mocks.jhebergNet.homepage):
