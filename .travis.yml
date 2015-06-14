@@ -10,4 +10,4 @@ install:
   - pip install -r requirements-tests.txt
   - pip install .
 script:
-  - nosetests -s
+  - nosetests -s --with-coverage --cover-erase --cover-package=autodl

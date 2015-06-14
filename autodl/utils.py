@@ -1,5 +1,6 @@
 import urllib, logging, json
 import settings
+import os
 
 # FIXME
 # Logginf configuration and setting
@@ -26,14 +27,15 @@ def get_activated_hosters(**kwargs):
     get activated hosters from configuration file (optionally pass as a parameter)
     return them as a list
     """
-    print settings.CONFIG_FILE
+    #print settings.CONFIG_FILE + " - test variable globale"
     logger.debug("Trying to load configuration file")
     try:
+        #TODO: make the work to remove this if
         if ("config_file" in kwargs) and \
              os.path.isfile(kwargs["config_file"]):
             config_file_path = kwargs["config_file"]
         else:
-            config_file_path = "/etc/autodl/autodl_config.json"
+            config_file_path = settings.CONFIG_FILE
 
         with open(config_file_path, 'r+') as fichier:
             decoded = json.load(fichier)

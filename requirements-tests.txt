@@ -1,3 +1,4 @@
 httmock
 pyflake
 mock
+coverage
