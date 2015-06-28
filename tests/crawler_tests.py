@@ -1,89 +1,109 @@
 from nose.tools import *
-from autodl.crawler import *
+import autodl.crawler
 import os
+import json
+import unittest
 
-def create_fake_conf(tmp_file):
-    with open(tmp_file, "w") as file_tmp:
-        json.dump({"supported_sites":{"animes":["mangaFrCom", "animeserv"], "series":["scenesources", "telechargementz"]}, "target_titles":{"animes":{"naruto": "None", "shoukugeki": "9"}, "series":{"atlantis": "10", "olympus": "None"}},"target_ep":{"shoukugeki": "9","atlantis": "10"}}, file_tmp)
+class Test_crawler(unittest.TestCase):
 
-def delete_fake_conf(tmp_file):
-    os.remove(tmp_file)
 
-def test_targets():
-    tmp_file = "/tmp/conf_tmp.json"
-    create_fake_conf(tmp_file)
+    def setUp(self):
+        self.config_file = "/tmp/tmp_config.json"
+        self.user_settings_file = "/tmp/tmp_user_settings.json"
+        with open(self.user_settings_file, "w") as file_tmp:
+            json.dump({"animes": {"vostfr": { "720p": {"naruto": "None", 
+                "shoukugeki":"9"}, "1080p": {"shingeki": "8"}}, "vosta": 
+                {"720p": {"step": "10"}}}, "series": {"vo": {"480p": 
+                {"atlantis": "10", "olympus": "None"}}}}, file_tmp)
 
-    tgt = Targets(config_file=tmp_file)
-    assert_equal(tgt.config_file_path, tmp_file)
+        with open(self.config_file, "w") as file_tmp:
+            json.dump({"hosters": ["Uplea", "1fichier"], "activated_plugins": 
+                {"series": {"vo": {"all_res": ["scnsrcMe", "telechargementz"], 
+                "480p": ["site_serie_vo_480p"]}, "vf": {"all_res": 
+                ["site_serie_vf_all_res"]}}, "animes": {"vostfr": {"all_res": 
+                ["mangaFrCom", "zt"], "1080p": ["animeserv"]},"vosta": 
+                {"all_res": ["horriblesubsInfo"]}}}}, file_tmp)
+                
 
-    delete_fake_conf(tmp_file)
+    def tearDown(self):
+        os.remove(self.user_settings_file)
+        os.remove(self.config_file)
 
-def test_is_valid_type():
-    tmp_file = "/tmp/conf_tmp.json"
-    create_fake_conf(tmp_file)
+            
 
-    tgt = Targets(config_file=tmp_file)
-    val = tgt.is_valid_type("animes")
-    assert_equal(val, True)
+    def test_load_user_settings_file(self):
+        user_settings_file = self.user_settings_file
+        config_file = self.config_file
 
-    val2 = tgt.is_valid_plugin("theater")
-    assert_equal(val2, False)
+        tgt = autodl.crawler.Crawler(user_settings_file=user_settings_file, 
+                config_file=config_file).load_user_settings_file(
+                        user_settings_file=user_settings_file)
+    
+        assert isinstance(tgt, dict)
+    
 
-    delete_fake_conf(tmp_file)
-
-def test_is_valid_site():
-    tmp_file = "/tmp/conf_tmp.json"
-    create_fake_conf(tmp_file)
-
-    tgt = Targets(config_file=tmp_file)
-    val = tgt.is_valid_plugin("mangaFrCom")
-    assert_equal(val, True)
-
-    val2 = tgt.is_valid_plugin("test")
-    assert_equal(val2, False)
-
-    delete_fake_conf(tmp_file)
-
-def test_ep_to_dl():
-    tmp_file = "/tmp/conf_tmp.json"
-    create_fake_conf(tmp_file)
-
-    tgt = Targets(config_file=tmp_file)
-    val = tgt.ep_to_dl("animes", "shoukugeki")
-    assert_equal(val, "9")
-
-    delete_fake_conf(tmp_file)
-
-def test_targets_create():
-    tmp_file = "/tmp/conf_tmp.json"
-    create_fake_conf(tmp_file)
-
-    tgt = Targets(config_file=tmp_file)
-    # Test with no arguments provided
-    lt = tgt.create()
-    #print lt
-    assert_equal(lt[0][0], "series")
-    assert_equal(lt[0][1], "scenesources")
-    assert_equal(lt[0][2], "atlantis")
-    assert_equal(lt[0][3], "10")
-    # If 1 argument is provided
-    lt = tgt.create(target_type="animes")
-    #print lt
-    assert_equal(lt[0][0], "animes")
-    assert_equal(lt[0][1], "mangaFrCom")
-    assert_equal(lt[0][2], "naruto")
-    assert_equal(lt[0][3], "None")
-    # Test with 2 arguments
-    lt = tgt.create(target_type="animes", target_site="animeserv")
-    #print lt
-    assert_equal(lt[0][0], "animes")
-    assert_equal(lt[0][1], "animeserv")
-    assert_equal(lt[0][2], "naruto")
-    # Test with 3 arguments
-    lt = tgt.create(target_type="animes", target_site="animeserv", target_title="claymore")
-    #print lt
-    assert_equal(lt[0][0], "animes")
-    assert_equal(lt[0][1], "animeserv")
-    assert_equal(lt[0][2], "claymore")
-
-    delete_fake_conf(tmp_file)
+    def test_load_config_file(self):
+        user_settings_file = self.user_settings_file
+        config_file = self.config_file
+    
+        tgt = autodl.crawler.Crawler(user_settings_file=user_settings_file, 
+                config_file=config_file).load_config_file(
+                        config_file=config_file)
+    
+        assert isinstance(tgt, dict)
+    
+    def test_Crawler(self):
+        user_settings_file = self.user_settings_file
+        config_file = self.config_file
+    
+        tgt = autodl.crawler.Crawler(user_settings_file=user_settings_file, 
+                config_file=config_file)
+        #assert_equal(tgt.user_settings_file_path, user_settings_file)
+        #print tgt.user_settings
+        assert isinstance(tgt.user_settings, dict)
+        assert isinstance(tgt.config, dict)
+    
+    def test_ep_to_dl(self):
+        user_settings_file = self.user_settings_file
+        config_file = self.config_file
+    
+        tgt = autodl.crawler.Crawler(user_settings_file=user_settings_file,
+                config_file=config_file)
+        val = tgt.ep_to_dl("animes", "vostfr", "720p","shoukugeki")
+        assert_equal(val, "9")
+    
+    def test_get_activated_res(self):
+        user_settings_file = self.user_settings_file
+        config_file = self.config_file
+    
+        tgt = autodl.crawler.Crawler(user_settings_file=user_settings_file,
+                config_file=config_file)
+        res = tgt.get_activated_res("animes")
+        assert_equal(res["vosta"], [u'720p'])
+        assert_equal(res["vostfr"], [u'720p', u'1080p'])
+    
+    def test_get_pertinent_sites(self):
+        user_settings_file = self.user_settings_file
+        config_file = self.config_file
+    
+        tgt = autodl.crawler.Crawler(user_settings_file=user_settings_file,
+                config_file=config_file)
+        #res = tgt.get_activated_res("animes")
+        #print res
+        sites = tgt.get_pertinent_sites("animes") 
+    
+        assert_equal(sites["vosta"]['720p'], [u'horriblesubsInfo'])
+        assert isinstance(sites, dict)
+    
+    def test_targets_create(self):
+        user_settings_file = self.user_settings_file
+        config_file = self.config_file
+    
+        plugin = autodl.crawler.Crawler(user_settings_file=user_settings_file,
+                config_file=config_file)
+        tgt = plugin.target_create("animes")
+        assert_equal(tgt[0], {'res': u'720p', 'title': u'step', 'episode': 
+            u'10', 'target_type': 'animes', 'site': u'horriblesubsInfo'})
+            
+        assert isinstance(tgt, list)
+        assert isinstance(tgt[0], dict)

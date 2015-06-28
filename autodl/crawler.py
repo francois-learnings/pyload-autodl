@@ -9,175 +9,183 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-class Targets(object):
-    """create a target object from config files"""
+class Crawler(object):
+    """
+    create a target object from config files
+    """
     def __init__(self, **kwargs):
-        self.config_file_path = ""
-        logger.debug("Trying to load configuration file")
+        self.user_settings = self.load_user_settings_file(
+                kwargs["user_settings_file"])
+        self.config = self.load_config_file(
+                kwargs["config_file"])
+
+
+    def load_user_settings_file(self, user_settings_file):
+        """
+        Load user_settings file
+        """
+        self.user_settings_file_path = ""
+
+        logger.debug("Trying to load user_settings file")
         try:
-            if ("config_file" in kwargs) and \
-               os.path.isfile(kwargs["config_file"]):
-                self.config_file_path = kwargs["config_file"]
-            else:
-                self.config_file_path = "/etc/autodl/autodl_config.json"
+            self.user_settings_file_path = user_settings_file
+
+            with open(self.user_settings_file_path, 'r+') as fichier:
+                self.user_settings = json.load(fichier)
+            logger.debug("Successfully load config file from %s"
+                % (self.user_settings_file_path))
+
+            return self.user_settings
+
+        except (IOError, OSError) as e:
+            logger.error("No user_settings file found in %s"
+                         % (self.user_settings_file_path))
+            raise e
+
+    def load_config_file(self, config_file):
+        """
+        Load config file
+        """
+        self.config_file_path = ""
+
+        logger.debug("Trying to load config file")
+        try:
+            self.config_file_path = config_file
 
             with open(self.config_file_path, 'r+') as fichier:
-                self.decoded = json.load(fichier)
-            logger.debug("Successfully load config file from %s with \
-                    content %s" % (self.config_file_path, self.decoded))
+                self.config = json.load(fichier)
+            logger.debug("Successfully load config file from %s"
+                % (self.config_file_path,))
 
         except IOError as e:
             logger.error("No configuration file found in %s"
-                         % (self.config_file_path))
+                         % (self.config_file_path,))
             raise e
 
-    def is_valid_type(self, type_name):
+        return self.config
+
+    def ep_to_dl(self, media_type, lang, res, title):
         """
-        check if the string provided is a supported type
+        return from the user_settings file, the number of the episode matching 
+        parameters
         """
-        self.type_name = type_name
-        supported_types = ["animes", "series"]
-        result = False
-
-        for i in supported_types:
-            if i == self.type_name:
-                result = True
-
-        if result is True:
-                logger.debug("%s is a valid type" % (self.type_name))
-        else:
-                logger.error("%s is not a valid type" % (self.type_name))
-
-        return result
-
-    def is_valid_plugin(self, plugin):
-        """
-        check if the string provided is part of the plugins
-        """
-        self.plugin = plugin
-        cwd = os.getcwd()
-        plugins_list = os.listdir(cwd + "/autodl/plugins")
-        result = False
-        for i in plugins_list:
-            if self.plugin in i:
-                result = True
-                break
-        if result is True:
-                logger.debug("%s is a valid plugin" % (plugin))
-        else:
-                logger.error("%s is not a valid plugin" % (plugin))
-
-        return result
-
-    def ep_to_dl(self, media_type, title):
         self.media_type = media_type
+        self.lang = lang
+        self.res = res
         self.title = title
         target_ep = None
 
-        for i in self.decoded["target_titles"][self.media_type]:
+        for i in self.user_settings[self.media_type][self.lang][self.res]:
             if i == self.title:
-                 target_ep = self.decoded["target_titles"][self.media_type][i]
+                 target_ep = self.user_settings[self.media_type][self.lang]\
+                         [self.res][i]
 
         return target_ep
 
+    def get_activated_res(self, target_type):
+        """
+        return a dictionary with resolution used in user_settings.json for a 
+        given type with the form {lang1: [res1, res2]}
+        """
+        self.target_type = target_type
 
-    def create(self, **kwargs):
+        return_dict = {}
+        
+        for lang in self.user_settings[self.target_type]:
+            #print lang
+            res_list = []
+            for res in self.user_settings[self.target_type][lang]:
+                #print res
+                res_list.append(res)
+            #print res_list    
+            return_dict[lang] = res_list
+        #print return_dict    
+        return return_dict    
+
+
+    def get_pertinent_sites(self, target_type):
         """
-        Create and return a list of targets from configuration file. Targets
-        inside that list depend of the paramters passed to the create function.
-        This list can passed to a crawler object to fetch actual urls.
-        It can take 3 arguments in this order :
-        target_type, target_site, target_title
-        TODO: Raise an error line 78 instead of a print
+        return a dict of site to check for links
+        Those sites are chosen depending on the activated languages and 
+        resolutions in the user_settings.json file
         """
-        target_type = None
-        target_site = None
-        target_title = None
-        target_ep = None
-        for i in kwargs:
-            if i == "target_type":
-                target_type = kwargs["target_type"]
-            elif i == "target_site":
-                target_site = kwargs["target_site"]
-            elif i == "target_title":
-                target_title = kwargs["target_title"]
-            elif i == "target_ep":
-                target_ep = kwargs["target_ep"]
+        self.target_type = target_type
+        self.resolutions = self.get_activated_res(self.target_type)
+
+        # print self.resolutions
+        # print self.config
+        # print self.user_settings
+
+        return_dict = {}
+        for lang in self.resolutions:
+            return_dict[lang] = {}
+            #return_list.append(self.config["activated_plugins"]
+            #        [self.target_type][lang]["all_res"])
+            res_list = self.resolutions[lang]
+            #print res_list
+
+            for activated_res in res_list:
+                return_dict[lang][activated_res] = []
+
+                #print lang, activated_res
+                avail_res_list = (self.config["activated_plugins"]
+                    [self.target_type][lang])
+                #print avail_res_list
+                
+                for avail_res in avail_res_list:
+                    # for every resolutions activated in the user_settings, we
+                    # add to the return_list the sites for "all_res"
+                    if avail_res == "all_res":
+                        #print avail_res_list["all_res"]
+                        return_dict[lang][activated_res].extend(
+                                avail_res_list["all_res"])
+                    if activated_res == avail_res:
+                        #print avail_res, (self.config["activated_plugins"]
+                        #        [self.target_type][lang][activated_res])
+                        return_dict[lang][activated_res].extend(
+                                avail_res_list[activated_res])
+        #print return_dict
+        return return_dict
+
+    def target_create(self, target_type):
+        """
+        Create and return a list of targets from configuration file. 
+        This list can passed to a plugin object to fetch actual urls.
+        One target has the following structure:
+        {
+            "type": "sometype",
+            "site": "somesite",
+            "title": "sometitle",
+            "episode": "someepisode",
+            "res": "someres"
+            
+        }
+        The returned structure is with the following form :
+        [target1, target2, target3]
+        """
+        self.target_type = target_type
+        sites = self.get_pertinent_sites(self.target_type)
 
         targets_list = []
-
-        if len(kwargs) == 0:
-            # no arguments provided => create all targets (every titles, for
-            # every sites and for every types
-            for i in self.decoded["supported_sites"]:
-                for j in self.decoded["supported_sites"][i]:
-                    for k in self.decoded["target_titles"][i]:
-                        target_ep = self.ep_to_dl(i, k)
-                        targets_list.append([i, j, k, target_ep])
-
-        elif target_type is not None:
-            if (target_type is not None) and (target_site is not None):
-                if (target_type is not None) and (target_site is not None) \
-                   and (target_title is not None):
-                    # If all three arguments are provided
-                    # TODO: Check if the 3 arguments provided are valids
-                    target_ep = self.ep_to_dl(target_type, target_title)
-                    targets_list.append([target_type, target_site,
-                                        target_title, target_ep])
-                else:
-                    # If 2 arguments are provided (target_type and target_site)
-                    # TODO: Check if the 2 arguments provided are valids
-                    for i in self.decoded["target_titles"][target_type]:
-                        target_ep = self.ep_to_dl(target_type, i)
-                        targets_list.append([target_type, target_site, i, target_ep])
-            else:
-                # If 1 argument is provided (target_type)
-                # TODO: Check if the argument provided is valid
-                for i in self.decoded["supported_sites"][target_type]:
-                    for j in self.decoded["target_titles"][target_type]:
-                        target_ep = self.ep_to_dl(target_type, j)
-                        targets_list.append([target_type, i, j, target_ep])
-        else:
-            print "ERROR - Il semble que je n'ai pas compris un des parametres"
-
-        logger.debug("Successfully created a list of targets content %s"
-                     % (targets_list))
+        for lang in sites:
+            #print lang
+            for res in sites[lang]:
+                #print res
+                for site in sites[lang][res]:
+                    #print res, site
+                    #print self.user_settings[self.target_type][lang][res]
+                    for title in (self.user_settings[self.target_type][lang]
+                            [res]):
+                        #print title
+                        episode = self.ep_to_dl(self.target_type, lang, res, 
+                                title)
+                        target = {
+                                'target_type': self.target_type,
+                                'res': res,
+                                'site': site,
+                                'title': title,
+                                'episode': episode
+                                }
+                        targets_list.append(target)
+        #print targets_list
         return targets_list
-
-
-# TODO: LOG things
-class Crawler(object):
-    """ Crawler object to get url for some titles on some sites"""
-
-    def __init__(self, target):
-        self.target_type = target[0]
-        self.target_site = target[1]
-        self.target_title = target[2]
-
-        if self.target_type == "animes":
-            pass
-        elif self.target_type == "series":
-            pass
-        else:
-            print "Error - Type %s is not supported" % (self.target_type)
-
-    def get():
-        pass
-
-
-#tgt = Targets()
-#tgt.is_valid_plugin("test")
-#tl = tgt.create(target_type="animes", target_site="mangaFrCom", target_title="shokugeki")
-#print tl
-
-#mangaFrCom.get_links(tl[0][2], tl[0][3])
-
-#for i in tl:
-#    print i
-#    crawl = Crawler(i)
-#    print crawl.target_type
-#    print crawl.target_site
-#    print crawl.target_title
-#
-
-#tgt.ep_to_dl("series", "atlantis")
