@@ -60,7 +60,7 @@ class TestGetActivatedHosters(unittest.TestCase):
         assert_equal(hosters, [u'uplea', u'1fichier', u'Filefactory',
                                u'tuslfile'])
 
-        # test the error
+        # TODO test the error
         with self.assertRaises(IOError):
             autodl.settings.set_globals({"CONFIG_FILE": "/tmp/error.json"})
             hosters = autodl.utils.get_activated_hosters()

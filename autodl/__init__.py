@@ -4,6 +4,7 @@ TODO
 import sys, getopt, time, os
 import autodl.scheduler
 import settings
+import autodl.utils
 
 def usage():
     print """Usage: 
@@ -111,7 +112,7 @@ def set_defaults(DICT_OPTS):
 def main():
     DICT_OPTS = parse_options()
     set_defaults(DICT_OPTS)
-    settings.set_globals(DICT_OPTS)
+    autodl.utils.set_globals(DICT_OPTS)
     #print settings.CONFIG_FILE
     #print DICT_OPTS
     sched = autodl.scheduler.Scheduler(DICT_OPTS)

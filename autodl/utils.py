@@ -10,6 +10,13 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+def set_globals(DICT_OPTS):
+    global CONFIG_FILE
+    CONFIG_FILE = DICT_OPTS["CONFIG_FILE"]
+
+    global USER_SETTINGS_FILE
+    USER_SETTINGS_FILE = DICT_OPTS["USER_SETTINGS_FILE"]
+            
 
 def get_webpage(url):
     logger.debug("Trying to load webpage: %s" % (url))
