@@ -49,8 +49,10 @@ class Scheduler(object):
         supported_types = ["animes", "series", "vosta"]
         for media_type in supported_types:
             thread = threading.Thread(target=self.check_type, args=(media_type,))
-            thread.daemon = True                            # Daemonize thread
-            thread.start()                                  # Start the execution
+            # Daemonize thread
+            thread.daemon = True
+            # Start the execution
+            thread.start()                                  
 
 
     def increment_episode(self, media_type, title):
@@ -116,62 +118,4 @@ class Scheduler(object):
 
             time.sleep(next_call - time.time())
 
-
-#sched = Scheduler()
-#while True:
-#    time.sleep(1)
-
-
-
-#next_call = time.time()
-#
-#def foo():
-#    print datetime.datetime.now()
-#
-#def daemon(minutes):
-#    while True:
-#        global next_call
-#        next_call = next_call+(60 * minutes)
-#        threading.Timer( next_call - time.time(), foo ).start()
-#        time.sleep(next_call - time.time())
-#
-#
-#daemon(1)
-
-#class ThreadingExample(object):
-#    """ Threading example class
-#
-#    The run() method will be started and it will run in the background
-#    until the application exits.
-#    """
-#
-#    def __init__(self, interval=1):
-#        """ Constructor
-#
-#        :type interval: int
-#        :param interval: Check interval, in seconds
-#        """
-#        self.interval = 60 * interval
-#        thread = threading.Thread(target=self.run, args=())
-#        thread.daemon = True                            # Daemonize thread
-#        thread.start()                                  # Start the execution
-#
-#    def run(self):
-#        """ Method that runs forever """
-#        while True:
-#            # Do something
-#            print('Doing something imporant in the background')
-#                                
-#            time.sleep(self.interval)
-#
-#example = ThreadingExample()
-#while True:
-#    time.sleep(1)
-
-
-
-#time.sleep(3)
-#print('Checkpoint')
-#time.sleep(2)
-#print('Bye')
 
