@@ -3,6 +3,7 @@ import autodl.pyload_client
 import autodl.plugins.mangaFrCom 
 import autodl.plugins.scnsrcMe
 import autodl.plugins.horriblesubsInfo
+import autodl.utils
 
 # Logginf configuration and setting
 logging.basicConfig()
@@ -22,100 +23,148 @@ class Scheduler(object):
         self.DICT_OPTS = DICT_OPTS
 
         self.CONFIG_FILE = self.DICT_OPTS["CONFIG_FILE"]
+        self.USER_SETTINGS_FILE = self.DICT_OPTS["USER_SETTINGS_FILE"]
         self.SERVER_IP = self.DICT_OPTS["SERVER_IP"]
         self.SERVER_PORT = self.DICT_OPTS["SERVER_PORT"]
         self.USER = self.DICT_OPTS["USER"]
         self.PASSWORD = self.DICT_OPTS["PASSWORD"]
 
-        #self.config_file_path = ""
-        #if ("config_file" in kwargs) and \
-        #   os.path.isfile(kwargs["config_file"]):
-        #    self.config_file_path = kwargs["config_file"]
-        #else:
-        #    self.config_file_path = "/etc/autodl/autodl_config.json"
+        self.config_content = autodl.utils.load_config_file(self.CONFIG_FILE)
+        self.user_settings_content = autodl.utils.load_user_settings_file(
+                self.USER_SETTINGS_FILE)
 
-        logger.debug("Trying to load configuration file")
-        try:
-            with open(self.CONFIG_FILE, 'r+') as fichier:
-                self.decoded = json.load(fichier)
-            logger.debug("Successfully load config file from %s with \
-                    content %s" % (self.CONFIG_FILE, self.decoded))
-
-        except IOError as e:
-            logger.error("No configuration file found in %s"
-                         % (self.CONFIG_FILE))
-            raise e
-
-        supported_types = ["animes", "series", "vosta"]
+    #TODO : move the wile loop in here ?   
+    def run (self):    
+        supported_types = ["animes", "series"]
+        #TODO: Deal with the event of a thread crashing
         for media_type in supported_types:
-            thread = threading.Thread(target=self.check_type, args=(media_type,))
+            #print media_type
+            thread = threading.Thread(target=self.check_type, 
+                    args=(media_type,))
             # Daemonize thread
             thread.daemon = True
             # Start the execution
             thread.start()                                  
 
 
-    def increment_episode(self, media_type, title):
+    def increment_episode(self, media_type, lang, res, title):
         self.media_type = media_type
+        self.lang = lang
+        self.res = res
         self.title = title
 
-        with open(self.CONFIG_FILE, 'r') as f:
+        with open(self.USER_SETTINGS_FILE, 'r') as f:
             data = json.load(f)
-            current_episode = int(data["target_titles"][self.media_type][self.title])
+            current_episode = int(data[self.media_type]
+                    [lang][res][self.title])
             #print current_episode
             new_episode = str(current_episode + 1)
             #print new_episode
 
-            data["target_titles"][self.media_type][self.title] = new_episode
+            data[self.media_type][lang][res][self.title] = new_episode
         
-        with open(self.CONFIG_FILE, 'w') as f:
+        with open(self.USER_SETTINGS_FILE, 'w') as f:
             f.write(json.dumps(data, indent=4))
 
 
+    def get_links_from_plugin(self, target_list, site):
+        self.target_list = target_list
+        self.site = site
+
+        if self.site == "mangaFrCom":
+            plugin = autodl.plugins.mangaFrCom.MangaFrCom(self.target_list)
+            links = plugin.get_result_list()
+            #print links
+        elif self.site == "horriblesubsInfo":
+            plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo(
+                    self.target_list)
+            links = plugin.get_result_list()
+        elif self.site == "scnsrcMe":
+            links = autodl.plugins.scnsrcMe.get_result_list(self.target_list)
+
+        return links
+
+    def push_to_pyload(self, pltargets):
+        """
+        :param links:   type list
+                        format [element1, element2, element3]
+
+                        element: {  'media_type': 'sometype',
+                                    'lang': 'somelang',
+                                    'res': 'someres',
+                                    'title': 'sometitle',
+                                    'episode': 'someepisode',
+                                    'links': [link1, link2, links3]
+                                 } 
+        """
+        self.pltargets = pltargets
+        #print self.pltargets
+        for element in self.pltargets:
+            #print element
+            if ((element['links'] is not None) and 
+                    (element['links'] != [])):
+                #print element['links']
+                #push_to_pyload(links[element])
+                client = autodl.pyload_client.pyloadClient(self.SERVER_IP, 
+                        self.SERVER_PORT, self.USER, self.PASSWORD)
+                #link = client.choose_link(links[element])
+                title = element['title']
+                # Try every links until one is valid
+                for link in element['links']:
+                    #print element
+                    #print link
+                    if link is not None:
+                        response = client.push_link(title, link)
+                        #print response
+                        if response == "success":
+                            self.increment_episode(element['target_type'], 
+                                    element['lang'], element['res'], 
+                                    element['title'])
+                                   
+                            break
+
+    def list_uniq_site(self, media_type):
+        tgt = crawler.Crawler(user_settings_file=self.USER_SETTINGS_FILE, 
+                config_file=self.CONFIG_FILE)
+        pertinent_sites = tgt.get_pertinent_sites(media_type)
+        #print pertinent_sites
+        return_list = []
+        for lang in pertinent_sites:
+            for res in pertinent_sites[lang]:
+                sites = pertinent_sites[lang][res]
+                for site in sites:
+                    if site not in return_list:
+                        return_list.append(site)
+        #print return_list            
+        return return_list            
+
+
     def check_type(self, media_type):
-        while True:
+        while self.keep_running() == True:
             now = time.time()
-            check_interval = 15
+            check_interval = 0.5
             next_call = now + (60 * check_interval)
 
+            list_sites = self.list_uniq_site(media_type)
             print datetime.datetime.now()
-            for site in self.decoded["supported_sites"][media_type]:
+
+            for site in list_sites:
                 links = []
                 #print site
-                tgt = crawler.Targets()
-                target_list = tgt.create(target_type=media_type, target_site=site)
+                tgt = crawler.Crawler(user_settings_file=self.USER_SETTINGS_FILE, 
+                        config_file=self.CONFIG_FILE)
+
+                target_list = tgt.target_create(target_type=media_type, 
+                        target_site=site)
                 #print target_list
 
-                if site == "mangaFrCom":
-                    plugin = autodl.plugins.mangaFrCom.MangaFrCom(target_list)
-                    links = plugin.get_result_list()
-                    #print links
-                elif site == "horriblesubsInfo":
-                    plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo(target_list)
-                    links = plugin.get_result_list()
-                elif site == "scnsrcMe":
-                    links = autodl.plugins.scnsrcMe.get_result_list(target_list)
-                    #print links
+                links = self.get_links_from_plugin(target_list, site)
+                #print links
 
-                for element in links:
-                    #print element
-                    if (links[element] is not None) and (links[element] != []):
-                        #print links[element]
-                        #push_to_pyload(links[element])
-                        client = autodl.pyload_client.pyloadClient(self.SERVER_IP, self.SERVER_PORT, self.USER, self.PASSWORD)
-                        #link = client.choose_link(links[element])
-                        title = element
-                        # Try every links until one is valid
-                        for link in links[element]:
-                            #print element
-                            #print link
-                            if link is not None:
-                                response = client.push_link(title, link)
-                                #print response
-                                if response == "success":
-                                    self.increment_episode(media_type, title)
-                                    break
+                self.push_to_pyload(links)
 
             time.sleep(next_call - time.time())
 
 
+    def keep_running(self):
+        return True

@@ -147,7 +147,7 @@ class Crawler(object):
         #print return_dict
         return return_dict
 
-    def target_create(self, target_type):
+    def target_create(self, target_type, target_site):
         """
         Create and return a list of targets from configuration file. 
         This list can passed to a plugin object to fetch actual urls.
@@ -164,6 +164,7 @@ class Crawler(object):
         [target1, target2, target3]
         """
         self.target_type = target_type
+        self.target_site = target_site
         sites = self.get_pertinent_sites(self.target_type)
 
         targets_list = []
@@ -174,18 +175,20 @@ class Crawler(object):
                 for site in sites[lang][res]:
                     #print res, site
                     #print self.user_settings[self.target_type][lang][res]
-                    for title in (self.user_settings[self.target_type][lang]
-                            [res]):
-                        #print title
-                        episode = self.ep_to_dl(self.target_type, lang, res, 
-                                title)
-                        target = {
-                                'target_type': self.target_type,
-                                'res': res,
-                                'site': site,
-                                'title': title,
-                                'episode': episode
-                                }
-                        targets_list.append(target)
+                    if site == self.target_site:
+                        for title in (self.user_settings[self.target_type][lang]
+                                [res]):
+                            #print title
+                            episode = self.ep_to_dl(self.target_type, lang, res, 
+                                    title)
+                            target = {
+                                    'target_type': self.target_type,
+                                    'lang': lang,
+                                    'res': res,
+                                    'site': site,
+                                    'title': title,
+                                    'episode': episode
+                                    }
+                            targets_list.append(target)
         #print targets_list
         return targets_list

@@ -61,3 +61,34 @@ def get_activated_hosters(**kwargs):
     hosters = decoded["hosters"]
     # print hosters
     return hosters
+
+
+def load_config_file(config_file):
+    logger.debug("Trying to load configuration file")
+    try:
+        with open(config_file, 'r+') as fichier:
+            config_file_content = json.load(fichier)
+        logger.debug("Successfully load config file from %s with \
+                content %s" % (config_file, config_file_content))
+
+    except IOError as e:
+        logger.error("No configuration file found in %s"
+                     % (config_file))
+        raise e
+
+    return config_file_content
+
+def load_user_settings_file(user_settings_file):
+    logger.debug("Trying to load user_settings file")
+    try:
+        with open(user_settings_file, 'r+') as fichier:
+            user_settings_file_content = json.load(fichier)
+        logger.debug("Successfully load config file from %s with \
+                content %s" % (user_settings_file, user_settings_file_content))
+
+    except IOError as e:
+        logger.error("No configuration file found in %s"
+                     % (user_settings_file))
+        raise e
+
+    return user_settings_file_content

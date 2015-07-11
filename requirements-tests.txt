@@ -2,3 +2,4 @@ httmock
 pyflake
 mock
 coverage
+tl.testing

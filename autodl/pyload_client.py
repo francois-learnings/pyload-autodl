@@ -89,16 +89,3 @@ class pyloadClient(object):
             else:
                 print "Waiting - reason: %s" % (status)
                 time.sleep(2)
-
-
-
-
-
-#linklist = ['http://uplea.com/dl/057843A511390A8', 'http://www.uptobox.com/84vwjp6bnxkd']
-#push_to_pyload()
-
-#client = pyloadClient("172.17.0.57", "user", "neutre")
-#client.push_link("test", "http://uplea.com/dl/057843A511390A8")
-#while True:
-#    client.check_current_downloads_for_mirror(uplea)
-#    time.sleep(20)

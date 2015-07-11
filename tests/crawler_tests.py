@@ -101,9 +101,12 @@ class Test_crawler(unittest.TestCase):
     
         plugin = autodl.crawler.Crawler(user_settings_file=user_settings_file,
                 config_file=config_file)
-        tgt = plugin.target_create("animes")
-        assert_equal(tgt[0], {'res': u'720p', 'title': u'step', 'episode': 
-            u'10', 'target_type': 'animes', 'site': u'horriblesubsInfo'})
+        tgt = plugin.target_create("animes", 'mangaFrCom')
+        #print tgt
+        assert_equal(tgt[0],{'res': u'720p', 'lang': u'vostfr', 'title': u'naruto', 
+            'episode': u'None', 'target_type': 'animes', 
+            'site': u'mangaFrCom'}) 
+            
             
         assert isinstance(tgt, list)
         assert isinstance(tgt[0], dict)
