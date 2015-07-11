@@ -1,7 +1,6 @@
 import urllib
 import logging
 import json
-import settings
 import os
 
 # FIXME

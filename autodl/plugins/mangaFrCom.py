@@ -22,7 +22,7 @@ class MangaFrCom(object):
     """
     def __init__(self, targets, url="http://manga-fr.com/"):
         """
-        :param target : list of list (ie list of targets)
+        :param targets: list of list (ie list of targets)
         """
         self.url = url
         self.targets = targets
@@ -33,18 +33,18 @@ class MangaFrCom(object):
         homepage = autodl.utils.get_webpage(self.url)
         #print homepage
 
-        result = {}
+        result = []
         for target in self.targets:
-            if target[1] == "mangaFrCom": 
+            if target['site'] == "mangaFrCom": 
                 #print target
-                title = target[2]
-                episode = target[3]
+                title = target['title']
+                episode = target['episode']
                 #print title, episode
                 detail_url = self.parse_homepage_for_episodes(homepage, title, episode)
                 #print detail_url
                 
                 if detail_url is None:
-                    result[target[2]] = None
+                    target['links'] = None
                 else:
                     detailpage = autodl.utils.get_webpage(detail_url)
                 
@@ -57,7 +57,8 @@ class MangaFrCom(object):
                     else:
                         links = self.parse_mirrors_for_links(mirrors, arg="test")
                     #print links
-                    result[target[2]] = links
+                    target['links'] = links
+                    result.append(target)
         #print result
         return result
 
@@ -81,18 +82,18 @@ class MangaFrCom(object):
         detail_url = None
         for i in elements:
             if index < len(elements):
+                #print i
+                #print elements[index]
+                #print title
+                if ((title in i) and (episode is None)) or \
+                   ((title in i) and (episode in elements[index])):
+                    logger.info("Found title %s episode %s in %s" %
+                                 (title, episode, i))
+                    # print "found title %s episode %s in %s" % (title,
+                    #                                            elements[index], i)
+                    detail_url = i
+                    break
                 index += 1
-            #print i
-            #print elements[index]
-            #print title
-            if ((title in i) and (episode is None)) or \
-               ((title in i) and (episode in elements[index])):
-                logger.info("Found title %s episode %s in %s" %
-                             (title, episode, i))
-                # print "found title %s episode %s in %s" % (title,
-                #                                            elements[index], i)
-                detail_url = i
-                break
         else:
             logger.info("Did not find title %s episode %s in %s" %
                          (title, episode, self.url))

@@ -94,15 +94,19 @@ def test_get_result_list(get_activated_hosters):
     create_fake_multiup_homepage(tmp_file_multiup_home)
     create_fake_multiup_detailpage(tmp_file_multiup_detail)
 
-    plugin = autodl.plugins.mangaFrCom.MangaFrCom([["animes", "mangaFrCom", "shoukugeki", "9"]], "/tmp/home.html")
+    plugin = autodl.plugins.mangaFrCom.MangaFrCom([{"target_type": "animes", 
+        "lang": "vostfr", "res": "720p", "site": "mangaFrCom", 
+        "title": "shoukugeki", "episode": "9"}], "/tmp/home.html")
     autodl.utils.get_activated_hosters.return_value = ['Uplea', '1fichier']
     links = plugin.get_result_list(test="test")
     #print links
-    assert_equal(links["shoukugeki"], ["/success/uplea"])
+    assert_equal(links[0]["links"], ["/success/uplea"])
 
-    plugin = autodl.plugins.mangaFrCom.MangaFrCom([["animes", "mangaFrCom", "shoukugeki", None]], "/tmp/home.html")
+    plugin = autodl.plugins.mangaFrCom.MangaFrCom([{"target_type": "animes",
+        "lang": "vostfr", "res": "720p", "site": "mangaFrCom",
+        "title": "shoukugeki", "episode": None}], "/tmp/home.html")
     #print links
-    assert_equal(links["shoukugeki"], ["/success/uplea"])
+    assert_equal(links[0]["links"], ["/success/uplea"])
 
 
     delete_fake_file(tmp_file)

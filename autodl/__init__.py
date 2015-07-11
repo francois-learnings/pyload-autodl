@@ -3,7 +3,6 @@ TODO
 """
 import sys, getopt, time, os
 import autodl.scheduler
-import settings
 import autodl.utils
 
 def usage():
@@ -116,6 +115,7 @@ def main():
     #print settings.CONFIG_FILE
     #print DICT_OPTS
     sched = autodl.scheduler.Scheduler(DICT_OPTS)
+    sched.run()
     while True:
             time.sleep(1)
 

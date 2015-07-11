@@ -129,7 +129,8 @@ class Crawler(object):
 
                 #print lang, activated_res
                 avail_res_list = (self.config["activated_plugins"]
-                    [self.target_type][lang])
+                        [self.target_type][lang])
+                    
                 #print avail_res_list
                 
                 for avail_res in avail_res_list:

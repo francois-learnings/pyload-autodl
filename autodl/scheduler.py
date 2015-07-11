@@ -71,16 +71,17 @@ class Scheduler(object):
         self.target_list = target_list
         self.site = site
 
+        links = None
         if self.site == "mangaFrCom":
             plugin = autodl.plugins.mangaFrCom.MangaFrCom(self.target_list)
             links = plugin.get_result_list()
             #print links
-        elif self.site == "horriblesubsInfo":
-            plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo(
-                    self.target_list)
-            links = plugin.get_result_list()
-        elif self.site == "scnsrcMe":
-            links = autodl.plugins.scnsrcMe.get_result_list(self.target_list)
+#        elif self.site == "horriblesubsInfo":
+#            plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo(
+#                    self.target_list)
+#            links = plugin.get_result_list()
+#        elif self.site == "scnsrcMe":
+#            links = autodl.plugins.scnsrcMe.get_result_list(self.target_list)
 
         return links
 
@@ -99,29 +100,30 @@ class Scheduler(object):
         """
         self.pltargets = pltargets
         #print self.pltargets
-        for element in self.pltargets:
-            #print element
-            if ((element['links'] is not None) and 
-                    (element['links'] != [])):
-                #print element['links']
-                #push_to_pyload(links[element])
-                client = autodl.pyload_client.pyloadClient(self.SERVER_IP, 
-                        self.SERVER_PORT, self.USER, self.PASSWORD)
-                #link = client.choose_link(links[element])
-                title = element['title']
-                # Try every links until one is valid
-                for link in element['links']:
-                    #print element
-                    #print link
-                    if link is not None:
-                        response = client.push_link(title, link)
-                        #print response
-                        if response == "success":
-                            self.increment_episode(element['target_type'], 
-                                    element['lang'], element['res'], 
-                                    element['title'])
-                                   
-                            break
+        if self.pltargets is not None:
+            for element in self.pltargets:
+                #print element
+                if ((element['links'] is not None) and 
+                        (element['links'] != [])):
+                    #print element['links']
+                    #push_to_pyload(links[element])
+                    client = autodl.pyload_client.pyloadClient(self.SERVER_IP, 
+                            self.SERVER_PORT, self.USER, self.PASSWORD)
+                    #link = client.choose_link(links[element])
+                    title = element['title']
+                    # Try every links until one is valid
+                    for link in element['links']:
+                        #print element
+                        #print link
+                        if link is not None:
+                            response = client.push_link(title, link)
+                            #print response
+                            if response == "success":
+                                self.increment_episode(element['target_type'], 
+                                        element['lang'], element['res'], 
+                                        element['title'])
+                                       
+                                break
 
     def list_uniq_site(self, media_type):
         tgt = crawler.Crawler(user_settings_file=self.USER_SETTINGS_FILE, 
@@ -146,11 +148,11 @@ class Scheduler(object):
             next_call = now + (60 * check_interval)
 
             list_sites = self.list_uniq_site(media_type)
-            print datetime.datetime.now()
+            print datetime.datetime.now(), media_type
 
             for site in list_sites:
                 links = []
-                #print site
+                print site
                 tgt = crawler.Crawler(user_settings_file=self.USER_SETTINGS_FILE, 
                         config_file=self.CONFIG_FILE)
 
