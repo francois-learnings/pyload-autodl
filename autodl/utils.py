@@ -9,13 +9,14 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 def set_globals(DICT_OPTS):
     global CONFIG_FILE
     CONFIG_FILE = DICT_OPTS["CONFIG_FILE"]
 
     global USER_SETTINGS_FILE
     USER_SETTINGS_FILE = DICT_OPTS["USER_SETTINGS_FILE"]
-            
+
 
 def get_webpage(url):
     logger.debug("Trying to load webpage: %s" % (url))
@@ -39,7 +40,6 @@ def get_activated_hosters(**kwargs):
     return them as a list
     """
     # print settings.CONFIG_FILE + " - test variable globale"
-    #print vars()
     logger.debug("Trying to load configuration file")
     try:
         # TODO: make the work to remove this if
@@ -77,6 +77,7 @@ def load_config_file(config_file):
         raise e
 
     return config_file_content
+
 
 def load_user_settings_file(user_settings_file):
     logger.debug("Trying to load user_settings file")
