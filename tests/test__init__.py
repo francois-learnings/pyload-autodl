@@ -7,6 +7,7 @@ import mock
 import custom_errors
 import time
 
+
 class TestInit(unittest.TestCase):
     """
     test the __init__ functions
@@ -25,7 +26,6 @@ class TestInit(unittest.TestCase):
         os.environ['ODL_USER'] = "test_user"
         os.environ['ODL_PASSWORD'] = "test_password"
 
-
     def teardown_env(self):
         os.environ.pop('ODL_CONFIG')
         os.environ.pop('ODL_USER_SETTINGS')
@@ -36,67 +36,97 @@ class TestInit(unittest.TestCase):
 
     def set_args(self):
         sys.argv = []
-        sys.argv[1:] = ["useless", "-c", "test_config", "-s", "test_user_settings", "-a", 
-                "test_server_ip", "-u", "test_user", "-P", "test_server_port",
-                "-p", "test_password"]
+        sys.argv[1:] = [
+            "useless",
+            "-c", "test_config",
+            "-s", "test_user_settings",
+            "-a", "test_server_ip",
+            "-u", "test_user",
+            "-P", "test_server_port",
+            "-p", "test_password"
+        ]
 
     def test_parse_options_with_env_var(self):
         self.set_env()
 
         sys.argv = []
         result = autodl.__init__.parse_options()
-        #print result
-        assert_equal(result, {'CONFIG_FILE': 'test_config', 'SERVER_IP': 
-            'test_server_ip', 'USER': 'test_user', 'SERVER_PORT': 
-            'test_server_port', 'PASSWORD': 'test_password', 
-            'USER_SETTINGS_FILE': 'test_user_settings'})
+        # print result
+        assert_equal(result, {
+            'CONFIG_FILE': 'test_config',
+            'SERVER_IP': 'test_server_ip',
+            'USER': 'test_user',
+            'SERVER_PORT': 'test_server_port',
+            'PASSWORD': 'test_password',
+            'USER_SETTINGS_FILE': 'test_user_settings'}
+        )
         assert isinstance(result, dict)
-        #with self.assertRaises(IOError):
-        #    autodl.utils.get_webpage("/tmp/errorpage.html")
+        # with self.assertRaises(IOError):
+        #     autodl.utils.get_webpage("/tmp/errorpage.html")
 
         self.teardown_env()
 
     def test_parse_options_with_args(self):
         self.set_args()
         result = autodl.__init__.parse_options()
-        #print result
-        assert_equal(result, {'CONFIG_FILE': 'test_config', 'SERVER_IP': 
-            'test_server_ip', 'USER': 'test_user', 'SERVER_PORT': 
-            'test_server_port', 'PASSWORD': 'test_password', 
-            'USER_SETTINGS_FILE': 'test_user_settings'})
+        # print result
+        assert_equal(result, {
+            'CONFIG_FILE': 'test_config',
+            'SERVER_IP': 'test_server_ip',
+            'USER': 'test_user',
+            'SERVER_PORT': 'test_server_port',
+            'PASSWORD': 'test_password',
+            'USER_SETTINGS_FILE': 'test_user_settings'}
+        )
         assert isinstance(result, dict)
-    
+
     def test_parse_options_help(self):
         sys.argv = []
         sys.argv[1:] = ["useless", "-h"]
         with self.assertRaises(SystemExit):
             autodl.__init__.parse_options()
-    
+
     def test_parse_options_warnings(self):
         self.set_env()
         self.set_args()
 
         result = autodl.__init__.parse_options()
 
-        #print result
-        assert_equal(result, {'CONFIG_FILE': 'test_config', 'SERVER_IP': 
-            'test_server_ip', 'USER': 'test_user', 'SERVER_PORT': 
-            'test_server_port', 'PASSWORD': 'test_password', 
-            'USER_SETTINGS_FILE': 'test_user_settings'})
+        # print result
+        assert_equal(result, {
+            'CONFIG_FILE': 'test_config',
+            'SERVER_IP': 'test_server_ip',
+            'USER': 'test_user',
+            'SERVER_PORT': 'test_server_port',
+            'PASSWORD': 'test_password',
+            'USER_SETTINGS_FILE': 'test_user_settings'}
+        )
         assert isinstance(result, dict)
 
         self.teardown_env
 
     def test_set_defaults(self):
-        DICT = {'CONFIG_FILE': 'test_config', 'SERVER_IP': 'test_server_ip', 'USER': 'test_user', 'SERVER_PORT': None, 'PASSWORD': 'test_password', 'USER_SETTINGS_FILE': 'test_user_settings'}
+        DICT = {
+            'CONFIG_FILE': 'test_config',
+            'SERVER_IP': 'test_server_ip',
+            'USER': 'test_user',
+            'SERVER_PORT': None,
+            'PASSWORD': 'test_password',
+            'USER_SETTINGS_FILE': 'test_user_settings'}
 
         autodl.__init__.set_defaults(DICT)
-        #print DICT
+        # print DICT
 
         assert_equal(DICT['SERVER_PORT'], '8000')
 
     def test_set_defaults_err(self):
-        DICT = {'CONFIG_FILE': 'test_config', 'SERVER_IP': None, 'USER': 'test_user', 'SERVER_PORT': None, 'PASSWORD': 'test_password', 'USER_SETTINGS_FILE': 'test_user_settings'}
+        DICT = {
+            'CONFIG_FILE': 'test_config',
+            'SERVER_IP': None,
+            'USER': 'test_user',
+            'SERVER_PORT': None,
+            'PASSWORD': 'test_password',
+            'USER_SETTINGS_FILE': 'test_user_settings'}
 
         with self.assertRaises(ValueError):
             autodl.__init__.set_defaults(DICT)
@@ -114,4 +144,4 @@ class TestInit(unittest.TestCase):
         with self.assertRaises(custom_errors.CallableExhausted):
             autodl.__init__.main()
 
-        self.teardown_env    
+        self.teardown_env

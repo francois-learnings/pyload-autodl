@@ -13,3 +13,5 @@ script:
   - nosetests -s --with-coverage --cover-erase --cover-package=autodl
   - flake8 autodl/utils.py  
   - flake8 tests/utils_tests.py
+  - flake8 autodl/__init__.py
+  - flake8 tests/test__init__.py
