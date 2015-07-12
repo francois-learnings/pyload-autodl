@@ -3,15 +3,20 @@ try:
 except ImportError:
     from distutils.core import setup
 
+packages = ['autodl', 'autodl.plugins']
+data_files = [('/etc/autodl', ['misc/conf/etc/config.json', 
+               'misc/conf/etc/user_settings.json.sample'])]
+
 config = {
-    'description': 'autodl',
+    'description': 'pyload-autodl',
     'author': 'Francois Billant',
     'url': 'URL to get it at.',
     'download_url': 'Where to download it.',
     'author_email': 'fbillant@gmail.com',
-    'version': '0.1.3',
+    'version': '0.2.0',
     'install_requires': ['nose', 'selenium'],
-    'packages': ['autodl', 'autodl.plugins'],
+    'packages': packages,
+    'data_files': data_files,
     'name': 'autodl',
     'entry_points': {
         'console_scripts': [

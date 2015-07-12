@@ -1,0 +1,30 @@
+{
+    "series": {
+	"vo": {
+            "720p": {
+        	"serie_720p_title1": "10", 
+                "serie_720p_title2": "3"
+            }
+        },
+        "vf": {
+            "1080p": {
+                "serie_vf_1080p_title1": "18"
+            }
+        }
+    }, 
+    "animes": {
+        "vostfr": {
+            "720p": {
+                "anime_vostfr_720p_title1": "4"
+            },
+            "1080p": {
+                "anime_vostfr_1080p_title1": "2"
+            }
+        },
+        "vosta": {
+            "720p": {
+                "anime_vostfr_1080p_title1": "23"
+            }
+        }
+    }
+}

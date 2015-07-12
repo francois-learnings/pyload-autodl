@@ -1,0 +1,39 @@
+{
+    "hosters": [
+        "Uplea", 
+        "1fichier", 
+        "Filefactory", 
+        "tusfile"
+    ], 
+    "activated_plugins": {
+        "series": {
+	    "vo": {
+                "all_res": [	    
+                    "scnsrcMe", 
+                    "telechargementz"
+		],
+		"480p": [
+		    "site_vo_480p"
+		]
+	    },
+	    "vf" : {
+	        "all_res": [
+		    "site_vf_all_res"	
+	        ]		
+	    }	    
+	}, 
+        "animes": {
+            "vosta": {
+		"all_res": [
+                    "horriblesubsInfo"
+                ]
+	    },
+	    "vostfr": {
+		"all_res": [
+                    "mangaFrCom", 
+                    "animeserv"
+		]
+	    }
+	}
+    }
+}
