@@ -15,3 +15,5 @@ script:
   - flake8 tests/utils_tests.py
   - flake8 autodl/__init__.py
   - flake8 tests/test__init__.py
+  - flake8 autodl/plugins/horriblesubsInfo.py
+  - flake8 tests/plugin_horriblesubsInfo_tests.py

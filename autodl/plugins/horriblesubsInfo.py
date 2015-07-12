@@ -1,7 +1,6 @@
-from lxml import html
-import urllib, logging
+import logging
 import autodl.utils
-from selenium import webdriver 
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 
@@ -23,44 +22,56 @@ class HorriblesubsInfo(object):
         """
         self.url = url
         self.targets = targets
-        #print self.url
+        # print self.url
 
     def get_result_list(self):
         driver = webdriver.PhantomJS()
         activated_hosters = autodl.utils.get_activated_hosters()
-        #activated_hosters = ["Uplea", "Filefactory"]
-        #TODO: use a try bloc
+        # TODO: use a try bloc
         driver.get(self.url)
         elements = driver.find_elements(By.XPATH, '//div[@class="latest"]/div')
 
         result = []
         for target in self.targets:
             if target['site'] == "horriblesubsInfo":
-                #print target
+                # print target
                 title = target['title']
                 episode = target['episode']
-                #print title, episode
+                # print title, episode
                 for element in elements:
-                    #print element
-                    ref =  element.get_attribute("id")
-                    #print ref
+                    # print element
+                    ref = element.get_attribute("id")
+                    # print ref
                     if (title in ref) and (episode in ref):
-                        logger.info("Found title %s episode %s in %s"  %
+                        logger.info("Found title %s episode %s in %s" %
                                     (title, episode, self.url))
-                        links_list = driver.find_elements(By.XPATH, '//div[@id="' + ref + '"]/div[@class="resolutions-block"]/div[@class="linkful resolution-block"]/span[@id="720p"]/span[@class="ind-link"]/a')
+                        links_list = driver.find_elements(
+                            By.XPATH, ('//div[@id="' + ref + '"]'
+                                       '/div[@class="resolutions-block"]/'
+                                       'div[@class="linkful resolution-block"]'
+                                       '/span[@id="720p"]/'
+                                       'span[@class="ind-link"]/a')
+                        )
+
                         returned_links = []
                         for link in links_list:
-                            #print link.get_attribute("href")
+                            # print link.get_attribute("href")
                             for i in activated_hosters:
                                 if i.lower() in link.get_attribute("href"):
-                                    returned_links.append(link.get_attribute("href"))
-                        logger.info("Successfully built links list: %s for %s %s" % (returned_links, title, episode))            
+                                    returned_links.append(
+                                        link.get_attribute("href")
+                                    )
+                        logger.info("Successfully built links list:"
+                                    "%s for %s %s" % (returned_links,
+                                                      title,
+                                                      episode))
+
                         target['links'] = returned_links
                         result.append(target)
-                else:      
-                    logger.info("Did not find title %s episode %s in %s" % (title, episode, self.url))
+                else:
+                    logger.info("Did not find title %s episode "
+                                "%s in %s" % (title, episode, self.url))
 
         driver.quit()
-        #print result
+        # print result
         return result
-
