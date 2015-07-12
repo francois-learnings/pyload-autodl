@@ -109,10 +109,10 @@ class TestGetActivatedHosters(unittest.TestCase):
         autodl.utils.set_globals({
             "CONFIG_FILE": self.config_file,
             "USER_SETTINGS_FILE": self.user_settings_file})
+
         # test the if condition
         hosters = autodl.utils.get_activated_hosters(
-            config_file="/tmp/config.json")
-
+            config_file="/tmp/config_tmp.json")
         # print hosters
 
         assert isinstance(hosters, list)
