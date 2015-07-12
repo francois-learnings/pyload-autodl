@@ -40,6 +40,8 @@ class pyloadClient(object):
                 return item
             elif "1fichier" in item:
                 return item
+            elif "tusfile" in item:
+                return item
             elif "filefactory" in item:
                 return item
 
