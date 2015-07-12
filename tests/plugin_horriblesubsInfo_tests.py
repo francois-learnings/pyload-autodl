@@ -17,16 +17,24 @@ class Test_horriblesubsInfo(unittest.TestCase):
         os.remove("/tmp/homepage.html")
 
     def test_horriblesubsInfo(self):
-        plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo([['vosta', 'horriblesubsInfo', 'shokugeki', '11']])
+        plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo([{
+            'target_type': 'animes', 'lang': 'vosta', 'res': '720p', 
+            'site': 'horriblesubsInfo', 'title': 'shokugeki', 
+            'episode': '11'}], url="/tmp/homepage.html")
     
-        assert_equal(plugin.url, "http://horriblesubs.info")
-        assert_equal(plugin.targets, [['vosta', 'horriblesubsInfo', 'shokugeki', '11']])
+        assert_equal(plugin.url, "/tmp/homepage.html")
+        assert_equal(plugin.targets, [{'target_type': 'animes', 
+            'lang': 'vosta', 'res': '720p', 'site': 'horriblesubsInfo', 
+            'title': 'shokugeki', 'episode': '11'}])
     
 
     @patch('autodl.utils.get_activated_hosters')
     def test_get_result_list(self, get_activated_hosters):
-        plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo([['vosta', 'horriblesubsInfo', 'shokugeki', '11']], url="/tmp/homepage.html")
+        plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo([{
+            'target_type': 'animes', 'lang': 'vosta', 'res': '720p', 
+            'site': 'horriblesubsInfo', 'title': 'shokugeki', 
+            'episode': '11'}], url="/tmp/homepage.html")
         autodl.utils.get_activated_hosters.return_value = ['Filefactory', '1fichier']
         result = plugin.get_result_list()
         #print result
-        assert_equal(result, {'shokugeki': [u'http://success/filefactory']})
+        assert_equal(result[0]['links'], [u'http://success/filefactory'])

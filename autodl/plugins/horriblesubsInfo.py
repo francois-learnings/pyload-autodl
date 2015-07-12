@@ -33,12 +33,12 @@ class HorriblesubsInfo(object):
         driver.get(self.url)
         elements = driver.find_elements(By.XPATH, '//div[@class="latest"]/div')
 
-        result = {}
+        result = []
         for target in self.targets:
-            if target[1] == "horriblesubsInfo":
+            if target['site'] == "horriblesubsInfo":
                 #print target
-                title = target[2]
-                episode = target[3]
+                title = target['title']
+                episode = target['episode']
                 #print title, episode
                 for element in elements:
                     #print element
@@ -55,9 +55,10 @@ class HorriblesubsInfo(object):
                                 if i.lower() in link.get_attribute("href"):
                                     returned_links.append(link.get_attribute("href"))
                         logger.info("Successfully built links list: %s for %s %s" % (returned_links, title, episode))            
-                        result[target[2]] = returned_links
+                        target['links'] = returned_links
+                        result.append(target)
                 else:      
-                    logger.info("Did not find title %s episode %s in %s" % (target[2], target[3], self.url))
+                    logger.info("Did not find title %s episode %s in %s" % (title, episode, self.url))
 
         driver.quit()
         #print result

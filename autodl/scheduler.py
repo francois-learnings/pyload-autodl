@@ -80,8 +80,8 @@ class Scheduler(object):
             plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo(
                     self.target_list)
             links = plugin.get_result_list()
-        elif self.site == "scnsrcMe":
-            links = autodl.plugins.scnsrcMe.get_result_list(self.target_list)
+#        elif self.site == "scnsrcMe":
+#            links = autodl.plugins.scnsrcMe.get_result_list(self.target_list)
 
         return links
 
