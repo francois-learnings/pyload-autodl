@@ -39,13 +39,14 @@ def get_activated_hosters(**kwargs):
     return them as a list
     """
     # print settings.CONFIG_FILE + " - test variable globale"
+    #print vars()
     logger.debug("Trying to load configuration file")
     try:
         # TODO: make the work to remove this if
         if ("config_file" in kwargs) and os.path.isfile(kwargs["config_file"]):
             config_file_path = kwargs["config_file"]
         else:
-            config_file_path = settings.CONFIG_FILE
+            config_file_path = CONFIG_FILE
 
         with open(config_file_path, 'r+') as fichier:
             decoded = json.load(fichier)

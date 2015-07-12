@@ -82,11 +82,11 @@ class MangaFrCom(object):
         detail_url = None
         for i in elements:
             if index < len(elements):
+                #print title
                 #print i
                 #print elements[index]
-                #print title
                 if ((title in i) and (episode is None)) or \
-                   ((title in i) and (episode in elements[index])):
+                   ((title in i) and (episode in elements[index + 1])):
                     logger.info("Found title %s episode %s in %s" %
                                  (title, episode, i))
                     # print "found title %s episode %s in %s" % (title,

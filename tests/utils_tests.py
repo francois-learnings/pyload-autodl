@@ -30,21 +30,38 @@ class TestGetWebpage(unittest.TestCase):
 class TestGetActivatedHosters(unittest.TestCase):
 
     def setUp(self):
-        with open("/tmp/config.json", "w") as file_tmp:
-            json.dump({"hosters": ["uplea", "1fichier", "Filefactory",
-                       "tuslfile"], "supported_sites": {"animes":
-                       ["mangaFrCom", "animeserv"], "series":
-                       ["scenesources", "telechargementz"]}, "target_titles":
-                       {"animes": {"naruto": "None", "shoukugeki": "9"},
-                       "series": {"atlantis": "10", "olympus": "None"}},
-                       "target_ep": {"shoukugeki": "9", "atlantis": "10"}},
-                      file_tmp)
+        #with open("/tmp/config.json", "w") as file_tmp:
+        #    json.dump({"hosters": ["uplea", "1fichier", "Filefactory",
+        #               "tuslfile"], "supported_sites": {"animes":
+        #               ["mangaFrCom", "animeserv"], "series":
+        #               ["scenesources", "telechargementz"]}, "target_titles":
+        #               {"animes": {"naruto": "None", "shoukugeki": "9"},
+        #               "series": {"atlantis": "10", "olympus": "None"}},
+        #               "target_ep": {"shoukugeki": "9", "atlantis": "10"}},
+        #              file_tmp)
+        self.config_file = "/tmp/config_tmp.json"
+        with open(self.config_file, "w") as file_tmp:
+            json.dump({"hosters": ["Uplea", "1fichier"], "activated_plugins":
+                       {"series": {"vo": {"all_res": ["scnsrcMe", 
+                       "telechargementz"], "480p": ["site_serie_vo_480p"]}, 
+                       "vf": {"all_res": ["site_serie_vf_all_res"]}}, 
+                       "animes": {"vostfr": {"all_res": ["mangaFrCom", "zt"], 
+                       "1080p": ["animeserv"]},"vosta": {"all_res": 
+                       ["horriblesubsInfo"]}}}}, file_tmp)
+
+        self.user_settings_file = "/tmp/user_settings_tmp.json"
+        with open(self.user_settings_file, "w") as file_tmp:
+            json.dump({"animes": {"vostfr": { "720p": {"naruto": "None", 
+                "shoukugeki":"9"}, "1080p": {"shingeki": "8"}}, "vosta": 
+                {"720p": {"step": "10"}}}, "series": {"vo": {"480p": 
+                {"atlantis": "10", "olympus": "None"}}}}, file_tmp)
 
     def tearDown(self):
-        os.remove("/tmp/config.json")
+        os.remove("/tmp/config_tmp.json")
 
     def test_get_activated_hosters(self):
-        autodl.settings.set_globals({"CONFIG_FILE": "/tmp/config.json"})
+        autodl.utils.set_globals({"CONFIG_FILE": self.config_file, 
+            "USER_SETTINGS_FILE": self.user_settings_file})
         # test the if condition
         hosters = autodl.utils.get_activated_hosters(
             config_file="/tmp/config.json")
@@ -52,17 +69,16 @@ class TestGetActivatedHosters(unittest.TestCase):
         # print hosters
 
         assert isinstance(hosters, list)
-        assert_equal(hosters, [u'uplea', u'1fichier', u'Filefactory',
-                               u'tuslfile'])
+        assert_equal(hosters, [u'Uplea', u'1fichier'])
 
         # test the else statement
         hosters = autodl.utils.get_activated_hosters()
-        assert_equal(hosters, [u'uplea', u'1fichier', u'Filefactory',
-                               u'tuslfile'])
+        assert_equal(hosters, [u'Uplea', u'1fichier'])
 
         # test the error
         with self.assertRaises(IOError):
-            autodl.settings.set_globals({"CONFIG_FILE": "/tmp/error.json"})
+            autodl.utils.set_globals({"CONFIG_FILE": "/tmp/error.json",
+                "USER_SETTINGS_FILE": self.user_settings_file})
             hosters = autodl.utils.get_activated_hosters()
 
 
