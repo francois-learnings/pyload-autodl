@@ -80,8 +80,8 @@ class Scheduler(object):
             plugin = autodl.plugins.horriblesubsInfo.HorriblesubsInfo(
                     self.target_list)
             links = plugin.get_result_list()
-#        elif self.site == "scnsrcMe":
-#            links = autodl.plugins.scnsrcMe.get_result_list(self.target_list)
+        elif self.site == "scnsrcMe":
+            links = autodl.plugins.scnsrcMe.get_result_list(self.target_list)
 
         return links
 
@@ -144,7 +144,7 @@ class Scheduler(object):
     def check_type(self, media_type):
         while self.keep_running() == True:
             now = time.time()
-            check_interval = 0.5
+            check_interval = 15
             next_call = now + (60 * check_interval)
 
             list_sites = self.list_uniq_site(media_type)

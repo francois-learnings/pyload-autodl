@@ -34,12 +34,13 @@ def get_result_list(list, **kwargs):
     #print data
     tree = html.fromstring(data)
 
-    result = {}
+    result = []
     for target in list:
         #print target
-        if target[1] == "scnsrcMe":
-            links = get_links(tree, target[2], target[3])
-            result[target[2]] = links
+        if target['site'] == "scnsrcMe":
+            links = get_links(tree, target['title'], target['episode'])
+            target['links'] = links
+            result.append(target)
     return result
 
 def get_links(tree, title, episode, **kwargs):
