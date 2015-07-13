@@ -1,7 +1,6 @@
 from nose.tools import assert_equal
 import unittest
 import autodl.utils
-import autodl.settings
 import os
 import json
 from mock import patch
