@@ -4,6 +4,8 @@ python:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y python-dev
+  - sudo mkdir /etc/autodl
+  - sudo chown -R travis /etc/autodl  
 install:
   - pip install lxml              
   - pip install -r requirements.txt

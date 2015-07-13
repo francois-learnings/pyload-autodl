@@ -3,7 +3,7 @@
 ### Docker
 #### Run
 ```
-docker run -ti --rm -v ~/autodl:/etc/autodl -e CONFIG_FILE=/etc/autodl/config.json -e USER_SETTINGS_FILE=/etc/autodl/user_settings.json -e  SERVER_IP=<xxx.xxx.xxx.xxx> -e SERVER_PORT=8000 -e USER=<pyload_user> -e PASSWORD=<pyload_user_password> francois/pyload-autodl:latest
+docker run -ti --rm -v ~/autodl:/etc/autodl -e ODL_CONFIG=/etc/autodl/config.json -e ODL_USER_SETTINGS=/etc/autodl/user_settings.json -e  ODL_SERVER_IP=<xxx.xxx.xxx.xxx> -e ODL_SERVER_PORT=8000 -e ODL_USER=<pyload_user> -e ODL_PASSWORD=<pyload_user_password> francois/pyload-autodl:latest
 ```
 #### Build
 ```
