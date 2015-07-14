@@ -19,3 +19,5 @@ script:
   - flake8 tests/test__init__.py
   - flake8 autodl/plugins/horriblesubsInfo.py
   - flake8 tests/plugin_horriblesubsInfo_tests.py
+  - flake8 autodl/plugins/mangaFrCom.py
+  - flake8 tests/plugin_mangaFrCom_tests.py
