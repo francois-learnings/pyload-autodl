@@ -33,17 +33,26 @@ class pyloadClient(object):
         :return link
         """
         self.links = links
+	self.pref_order = ["uplea", "1fichier", "tusfile", "filefactory"]
+	
 
-        for item in links:
-            #print item
-            if "uplea" in item:
-                return item
-            elif "1fichier" in item:
-                return item
-            elif "tusfile" in item:
-                return item
-            elif "filefactory" in item:
-                return item
+	for hoster in self.pref_order:
+		prefered = [s for s in links if hoster in s]
+                if prefered != []:
+		    break
+	return prefered
+	
+
+        #for item in links:
+        #    #print item
+        #    if "uplea" in item:
+        #        return item
+        #    elif "1fichier" in item:
+        #        return item
+        #    elif "tusfile" in item:
+        #        return item
+        #    elif "filefactory" in item:
+        #        return item
 
 
     # TODO: Variabalise things and return value at the end

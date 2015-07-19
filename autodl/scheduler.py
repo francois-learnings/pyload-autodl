@@ -109,21 +109,18 @@ class Scheduler(object):
                     #push_to_pyload(links[element])
                     client = autodl.pyload_client.pyloadClient(self.SERVER_IP, 
                             self.SERVER_PORT, self.USER, self.PASSWORD)
-                    #link = client.choose_link(links[element])
+
+                    link = client.choose_link(element['links'])
                     title = element['title']
-                    # Try every links until one is valid
-                    for link in element['links']:
-                        #print element
-                        #print link
-                        if link is not None:
-                            response = client.push_link(title, link)
-                            #print response
-                            if response == "success":
-                                self.increment_episode(element['target_type'], 
-                                        element['lang'], element['res'], 
-                                        element['title'])
+                    if link is not None:
+                        response = client.push_link(title, link)
+                        #print response
+                        if response == "success":
+                            self.increment_episode(element['target_type'], 
+                                    element['lang'], element['res'], 
+                                    element['title'])
                                        
-                                break
+                            break
 
     def list_uniq_site(self, media_type):
         tgt = crawler.Crawler(user_settings_file=self.USER_SETTINGS_FILE, 
