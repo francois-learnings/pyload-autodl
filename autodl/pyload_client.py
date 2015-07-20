@@ -25,7 +25,7 @@ class pyloadClient(object):
         #print r
         #print r.text
 
-    def choose_link(self, links):
+    def choose_links(self, links):
         """
         Choose the best link in the list (links)
         :param links
@@ -37,23 +37,12 @@ class pyloadClient(object):
 	
 
 	for hoster in self.pref_order:
+		#print "looking for hoster %s..." % (hoster)
 		prefered = [s for s in links if hoster in s]
                 if prefered != []:
+		    #print "found hoster %s in link %s" % (hoster, prefered)
 		    break
 	return prefered
-	
-
-        #for item in links:
-        #    #print item
-        #    if "uplea" in item:
-        #        return item
-        #    elif "1fichier" in item:
-        #        return item
-        #    elif "tusfile" in item:
-        #        return item
-        #    elif "filefactory" in item:
-        #        return item
-
 
     # TODO: Variabalise things and return value at the end
     def push_link(self, title, link):
@@ -84,7 +73,7 @@ class pyloadClient(object):
             print r
             #print r.text
             resp = r.json()
-            #print resp
+            print resp
             status = resp["links"][0]["statusmsg"]
             #print status
             if status == "failed" or status == "offline" or status == "skipped":
