@@ -108,7 +108,7 @@ class JhebergNet(object):
         logger.debug("Found detail page relative path: %s" % (detail))
         #print detail
 
-        base_url = "http://jheberg.net"
+        base_url = "http://www.jheberg.net"
         detail_url = base_url + detail[0]
         logger.debug("Built detail page url: %s" % (detail_url))
         #print detail_url
@@ -131,7 +131,7 @@ class JhebergNet(object):
             for hoster in activated_hosters:
                 #print hoster
                 if (hoster.lower() in link) and (link is not None):
-                    redirection_url = "http://jheberg.net" + link
+                    redirection_url = "http://www.jheberg.net" + link
                     #print redirection_url
                     redirection_links.append(redirection_url)
 
