@@ -41,7 +41,7 @@ def test_parse_homepage_for_detail_url(get_activated_hosters):
     result = plugin.parse_homepage_for_detail_url(homepage)
     #print result
 
-    assert_equal(result, "http://jheberg.net/shoukugei-detail.html")
+    assert_equal(result, "http://www.jheberg.net/shoukugei-detail.html")
 
 @with_httmock(mocks.jhebergNet.detailpage)
 @patch('autodl.utils.get_activated_hosters')
@@ -53,7 +53,7 @@ def test_parse_detailpage_for_redirection_link(get_activated_hosters):
     autodl.utils.get_activated_hosters.return_value = ['Uplea', '1fichier']
     result = plugin.parse_detailpage_for_redirection_link(detailpage)
     #print result
-    assert_equal(result, ['http://jheberg.net/redirect/uplea'])
+    assert_equal(result, ['http://www.jheberg.net/redirect/uplea'])
 
 #TODO: find a way to test this method...
 #@unittest.skip("Need to be able to test method get_hoster_link_from_redirection_url")
