@@ -29,15 +29,20 @@ class MultiupOrg(object):
         Return a list of links from hosts in "desired_hosts" list
         '''
         #get homepage
-        homepage = autodl.utils.get_webpage(self.url)
+        if "download" in self.url:
+            homepage = autodl.utils.get_webpage(self.url)
 
-        #FIXME: Added for test purpose (use a MOCK in the test instead ?)
-        if len(kwargs) == 0:
-            #parse homepage for detail url
-            detail_url = self.parse_homepage_for_detail_url(homepage)
+            #FIXME: Added for test purpose (use a MOCK in the test instead ?)
+            if len(kwargs) == 0:
+                #parse homepage for detail url
+                detail_url = self.parse_homepage_for_detail_url(homepage)
+            else:
+                detail_url = self.parse_homepage_for_detail_url(homepage, baseurl="/tmp")
+            #print detail_url    
+        elif "mirror" in self.url:
+            detail_url = self.url
         else:
-            detail_url = self.parse_homepage_for_detail_url(homepage, baseurl="/tmp")
-        #print detail_url    
+            print "Unrecognize url: %s" % (self.url)
 
         #get detailpage
         detailpage = autodl.utils.get_webpage(detail_url)

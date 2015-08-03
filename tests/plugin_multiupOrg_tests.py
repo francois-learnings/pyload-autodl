@@ -53,7 +53,7 @@ def test_parse_detail_page_for_links(get_activated_hosters):
 
 @patch('autodl.utils.get_activated_hosters')
 def test_get_links(get_activated_hosters):
-    tmp_file = "/tmp/home.html"
+    tmp_file = "/tmp/download-home.html"
     tmp_file2 = "/tmp/detail.html"
     create_fake_homepage(tmp_file)
     create_fake_detailpage(tmp_file2)

@@ -22,7 +22,7 @@ class TestMangaFrCom(unittest.TestCase):
             file_tmp.write('<html><body><section><article><table>'
                            '<tbody><tr><td></td><td>720p</td></tr>'
                            '<tr><td class="table-links">'
-                           '<a href="/tmp/multiup-720p-home.html"></a></td>'
+                           '<a href="/tmp/download_multiup-720p-home.html"></a></td>'
                            '</tr></tbody></table>'
                            '<table><tbody><tr><td></td><td>1080p</td></tr>'
                            '<tr><td class="table-links">'
@@ -30,7 +30,7 @@ class TestMangaFrCom(unittest.TestCase):
                            '</tr></body></html>')
 
         # Fake multiup Homepage
-        self.multiup_homepage = "/tmp/multiup_homepage_tmp.html"
+        self.multiup_homepage = "/tmp/download_multiup_homepage_tmp.html"
         with open(self.multiup_homepage, "w") as file_tmp:
             file_tmp.write('<html><body><a class="btn" href="/detail.html">'
                            '</body></html>')
@@ -106,7 +106,7 @@ class TestMangaFrCom(unittest.TestCase):
         result_720p = plugin.parse_detailpage_for_mirrors(raw_html, "720p")
         # print result
 
-        assert_equal(result_720p, ['/tmp/multiup-720p-home.html'])
+        assert_equal(result_720p, ['/tmp/download_multiup-720p-home.html'])
 
         result_1080p = plugin.parse_detailpage_for_mirrors(raw_html, "1080p")
         # print result
